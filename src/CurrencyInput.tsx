@@ -1,4 +1,5 @@
 import React from 'react';
+import { VNCurrencyFormatter } from './util';
 
 type Props = {
     defaultValue?: number,
@@ -7,23 +8,15 @@ type Props = {
 }
 
 function CurrencyInput({ value, setValue, defaultValue }: Props) {
-    // const [value, setValue] = useState('');
 
     const handleInputChange = (event: any) => {
         const inputValue = event.target.value;
-        // Xử lý giá trị để chỉ chứa số và dấu chấm
         const sanitizedValue = inputValue.replace(/[^0-9]/g, '');
         setValue(sanitizedValue);
     };
 
     const formatCurrency = (value: any) => {
-        // Định dạng giá trị tiền tệ
-        const formatter = new Intl.NumberFormat('vn-VN', {
-            style: 'currency',
-            currency: 'VND',
-
-        });
-        return formatter.format(value);
+        return VNCurrencyFormatter.format(value);
     };
 
     return (

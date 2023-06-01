@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import './App.css'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import 'dayjs/locale/vi'
 import { DAYS } from './util'
 import CurrencyInput from './CurrencyInput'
