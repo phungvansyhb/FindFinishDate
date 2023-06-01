@@ -2,12 +2,11 @@ import React from 'react';
 import { VNCurrencyFormatter } from './util';
 
 type Props = {
-    defaultValue?: number,
     value: number,
     setValue: React.Dispatch<React.SetStateAction<number>>
 }
 
-function CurrencyInput({ value, setValue, defaultValue }: Props) {
+function CurrencyInput({ value, setValue }: Props) {
 
     const handleInputChange = (event: any) => {
         const inputValue = event.target.value;
@@ -21,7 +20,6 @@ function CurrencyInput({ value, setValue, defaultValue }: Props) {
 
     return (
         <input
-            defaultValue={defaultValue}
             className="form-input px-4 py-3 rounded-full dark:text-black"
             type="text"
             value={formatCurrency(value)}

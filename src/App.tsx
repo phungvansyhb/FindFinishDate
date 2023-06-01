@@ -42,7 +42,7 @@ function App() {
         }
         currentDate = currentDate.add(1, 'day');
       }
-      return currentDate.subtract(1, 'day');
+      return currentDate;
     }
     else return false
 
@@ -51,11 +51,12 @@ function App() {
 
 
   return (
-    <>
-      <p className="text-3xl font-bold mb-4">
-        Đơn đăng ký học
-      </p>
-      <div className='flex flex-col gap-4'>
+    <section className='px-2'>
+
+      <div className='flex flex-col gap-4 py-8'>
+        <p className="text-4xl font-bold mb-4">
+          Đơn đăng ký học
+        </p>
         <label htmlFor='class' className='font-semibold text-left'>Tên lớp</label>
         <input name='class' id='class' className="form-input px-4 py-3 rounded-full dark:text-black" placeholder='Tên lớp' />
 
@@ -78,20 +79,19 @@ function App() {
 
         <label htmlFor='numberLesson' className='font-semibold text-left'>Đơn giá (vnđ/1 buổi)</label>
 
-        <CurrencyInput defaultValue={100_000} value={moneyPerLesson} setValue={setmoneyPerLesson} />
+        <CurrencyInput value={moneyPerLesson} setValue={setmoneyPerLesson} />
         <div className='text-left font-xs text-slate-500'>Số buổi học :  {numberLesson ? numberLesson : 0} </div>
         <label htmlFor='numberLesson' className='font-semibold text-left'>Lịch học</label>
-        <div className='flex gap-4'>
+        <div className='flex gap-4 flex-wrap'>
           {DAYS.map(item => <div key={item.value}>
             {renderButtonSchedule(item)}
           </div>)}
         </div>
-
         <div className='text-xl text-slate-500 mt-4 font-semibold'>
           Ngày hoàn thành khóa học : {endDate() !== false ? (endDate() as dayjs.Dayjs).locale('vi').format('dddd, DD-MMMM-YYYY') : 'Chưa xác định'} </div>
 
       </div>
-    </>
+    </section>
   )
 }
 
