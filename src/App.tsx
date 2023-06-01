@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import './App.css'
 import * as dayjs from 'dayjs'
 import 'dayjs/locale/vi'
-import { DAYS, DAY_ARRAY } from './util'
+import { DAYS } from './util'
 import CurrencyInput from './CurrencyInput'
 
 
@@ -30,9 +30,6 @@ function App() {
     return Math.floor(money / moneyPerLesson)
   }, [money, moneyPerLesson])
 
-  const dayStartOnWeek = useMemo(() => {
-    return { value: dayjs(startDate).date(), label: DAY_ARRAY[dayjs(startDate).date()] }
-  }, [startDate])
 
 
   function findCourseEndDate() {
