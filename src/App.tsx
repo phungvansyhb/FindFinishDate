@@ -51,7 +51,7 @@ function App() {
 
 
   return (
-    <section className='px-2'>
+    <section>
 
       <div className='flex flex-col gap-4 py-8'>
         <p className="text-4xl font-bold mb-4">
