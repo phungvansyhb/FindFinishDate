@@ -1,5 +1,5 @@
 import React from 'react';
-import { VNCurrencyFormatter } from './util';
+import { VNCurrencyFormatter } from '../lib/utils';
 
 type Props = {
     value: number,
