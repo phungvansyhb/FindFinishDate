@@ -2,17 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 // import { getStorage , ref } from "firebase/storage";
 
-// TODO: move to .env
 const firebaseConfig = {
-    apiKey: "AIzaSyAKrQxR_E6bcZC3_p-fKKELuanCvH21eAs",
-    authDomain: "classmanage-7b65c.firebaseapp.com",
-    projectId: "classmanage-7b65c",
-    storageBucket: "classmanage-7b65c.appspot.com",
-    messagingSenderId: "633402335058",
-    appId: "1:633402335058:web:6f5c5625d473187002a48b",
-    measurementId: "G-KSRKEES5WX"
-  };
+  apiKey: import.meta.env.VITE_APP_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGING_SENDERID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MESSUREMENTID
+};
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-// const storageRef =(fileName:string)=> ref(getStorage(app),fileName);
-export { db  }
+export { db }

@@ -9,6 +9,7 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 export function convertTimestampFirebase({ date, format }: { date: { seconds: number, nanoseconds: number }, format?: string }) {
+    if (!date) return 'Không xác định'
     return dayjs(
         new Date(date.seconds * 1000 + date.nanoseconds / 1000000)
     ).format(format || "dddd, DD [thg] MM-YYYY")
@@ -78,7 +79,7 @@ export const DAYS = [
 
 export const DAY_ARRAY = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7',]
 
-export const TABS = { REGISTER: 'registers', STUDENTS: 'students' }
+export const TABS = { REGISTER: 'registers', STUDENTS: 'students', CLASSROOM: 'classroom' }
 
 export const DATABASE_KEY = {
     CLASS: 'Class',
@@ -90,4 +91,7 @@ export const DATABASE_KEY = {
 export const API_QUERY_KEY = {
     GET_LIST_STUDENT: 'get_list_student',
     GET_LIST_REGISTERFORM: 'get_list_registerform',
+    GET_LIST_CLASSROOM: 'get_list_classroom',
+    GET_DETAIL_STUDENT: 'get_detail_student',
+    GET_DETAIL_CLASSROOM: 'get_detail_classroom',
 }

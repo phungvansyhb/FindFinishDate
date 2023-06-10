@@ -2,15 +2,20 @@ import {
     ColumnDef,
     ColumnFiltersState,
     SortingState,
-    VisibilityState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    useReactTable,
+    useReactTable
 } from "@tanstack/react-table"
 
+import { FilterIcon, TableIcon } from "lucide-react"
+import React from "react"
+import { useLocalStorage } from 'usehooks-ts'
+import { Button } from "../button"
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../dropdown-menu"
+import { Input } from "../input"
 import {
     Table,
     TableBody,
@@ -19,23 +24,19 @@ import {
     TableHeader,
     TableRow,
 } from "../table"
-import { Button } from "../button"
-import React from "react"
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../dropdown-menu"
-import { FilterIcon, TableIcon } from "lucide-react"
-import { Input } from "../input"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
+    tableName: 'register' | 'student' | 'classroom'
 }
 
 export function DataTable<TData, TValue>({
     columns,
     data,
+    tableName,
 }: DataTableProps<TData, TValue>) {
-    const [columnVisibility, setColumnVisibility] =
-        React.useState<VisibilityState>({})
+    const [columnVisibility, setColumnVisibility] = useLocalStorage(`findFinishDate::${tableName}::columnVisibility`, {})
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -59,8 +60,8 @@ export function DataTable<TData, TValue>({
     })
 
     return (
-        <div >
-            <div className="flex items-center py-4 gap-4 flex-wrap ">
+        <div className="">
+            <div className="flex items-center py-4 gap-1 flex-wrap justify-end">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
@@ -91,7 +92,7 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
                 <DropdownMenu >
                     <DropdownMenuTrigger><FilterIcon /></DropdownMenuTrigger>
-                    <DropdownMenuContent className="p-4" side="bottom" align="start">
+                    <DropdownMenuContent className="p-4" align="end">
                         <div className="grid grid-cols-4 py-4 gap-4 ">
                             {table.getVisibleLeafColumns().map(column =>
                                 <Input
@@ -113,8 +114,7 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
 
             </div>
-
-            <div className="rounded-md border ">
+            <div className="rounded-md border w-full">
                 <Table >
                     <TableHeader >
                         {table.getHeaderGroups().map((headerGroup) => (

@@ -6,7 +6,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "../../button"
 import EditAction from "./EditAction"
 import ActiveAction from "./ActiveAction"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/dropdown-menu"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/dropdown-menu"
 import DeleteAction from "./DeleteAction"
 
 export const columns: ColumnDef<IStudent>[] = [
@@ -121,14 +121,14 @@ export const columns: ColumnDef<IStudent>[] = [
         accessorKey: "createAt",
         header: "Ngày tạo",
         cell: ({ row }) => {
-            return convertTimestampFirebase({ date: row.original.lastContactDate as Timestamp, format: 'DD/MM/YYYY' })
+            return convertTimestampFirebase({ date: row.original.createAt as Timestamp, format: 'DD/MM/YYYY' })
         }
     },
     {
         accessorKey: "uppateAt",
         header: "Ngày câp nhật",
         cell: ({ row }) => {
-            return convertTimestampFirebase({ date: row.original.lastContactDate as Timestamp, format: 'DD/MM/YYYY' })
+            return convertTimestampFirebase({ date: row.original.updateAt as Timestamp, format: 'DD/MM/YYYY' })
         }
     },
 

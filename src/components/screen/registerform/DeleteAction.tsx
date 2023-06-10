@@ -6,7 +6,7 @@ import { Trash2Icon } from "lucide-react"
 
 export default function DeleteAction({ id }: { id: React.Key }) {
     const queryClient = useQueryClient()
-    const deleteMutation = useDeleteDoc({ queryClient: queryClient, dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: API_QUERY_KEY.GET_LIST_STUDENT })
+    const deleteMutation = useDeleteDoc({ queryClient, dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: API_QUERY_KEY.GET_LIST_REGISTERFORM })
     return (
         <DropdownMenuItem
             onClick={() => deleteMutation.mutate(id)}

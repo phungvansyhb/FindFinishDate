@@ -1,9 +1,9 @@
 import { API_QUERY_KEY, DATABASE_KEY } from '@/lib/utils'
 import { useActiveDoc } from '@/services/hookBase.service'
-import { IStudent } from '@/typedefs/IStudent'
+import { IClass } from '@/typedefs/IClass'
 import { useQueryClient } from '@tanstack/react-query'
 
-type Props = { row: IStudent }
+type Props = { row: IClass }
 
 export default function ActiveAction({ row }: Props) {
     const queryClient = useQueryClient()

@@ -2,7 +2,7 @@ import { Button } from '@/components/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/dialog'
 import { PlusCircleIcon } from 'lucide-react'
 import { useState } from 'react'
-import { StudentForm } from './StudentForm'
+import { ClassroomForm } from './ClassRoomForm'
 
 
 export default function CreateModal() {
@@ -11,18 +11,18 @@ export default function CreateModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <PlusCircleIcon /> Thêm mới học sinh
+          <PlusCircleIcon /> Tạo lớp học
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:max-w-[700px] sm:max-w-[425px] h-screen overflow-y-auto">
+      <DialogContent className="md:max-w-[700px] sm:max-w-[425px] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Thêm mới học sinh</DialogTitle>
+          <DialogTitle>Thêm mới lớp học</DialogTitle>
           <DialogDescription>
-            Điền thông tin học sinh
+            Điền thông tin lớp học
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 ">
-          <StudentForm triggerDialog={setOpen} />
+          <ClassroomForm triggerDialog={setOpen} />
         </div>
 
       </DialogContent>

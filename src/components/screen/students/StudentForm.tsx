@@ -5,8 +5,8 @@ import { Input } from "@/components/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/select"
 import { Textarea } from "@/components/textarea"
-import { beforeCreate, cn } from "@/lib/utils"
-import { useCreateStudent, useUpdateStudent } from "@/services/student.service"
+import { API_QUERY_KEY, DATABASE_KEY, beforeCreate, cn } from "@/lib/utils"
+import { useCreateDoc, useUpdateDoc } from "@/services/hookBase.service"
 import { CHANNEL, GRADE, IStudent, WOM } from "@/typedefs/IStudent"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
@@ -48,8 +48,8 @@ type Props = {
 
 export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Props) {
     const queryClient = useQueryClient()
-    const createStudentMutation = useCreateStudent(queryClient, () => triggerDialog(false))
-    const updateStudentMutation = useUpdateStudent(queryClient, () => triggerDialog(false))
+    const createStudentMutation = useCreateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_STUDENT] })
+    const updateStudentMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_STUDENT, API_QUERY_KEY.GET_LIST_REGISTERFORM] })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: initialValue || {
@@ -143,8 +143,8 @@ export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Pr
                             <FormLabel>Ghi chú </FormLabel>
                             <FormControl>
                                 <Textarea
+                                    className="resize"
                                     placeholder="Ghi chú cho học sinh"
-                                    className="resize-none"
                                     {...field}
                                 />
                             </FormControl>
