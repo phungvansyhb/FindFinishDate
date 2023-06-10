@@ -11,7 +11,6 @@ type Props = { id: React.Key, className: string }
 export default function DetailClassAction({ id, className }: Props) {
     const [open, setOpen] = useState(false)
     const { data } = useGetDetailDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS + '/' + id, enable: open })
-    console.log(data)
     const [isEdit, setEdit] = useState(false)
     return (
         <>

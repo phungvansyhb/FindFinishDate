@@ -10,20 +10,23 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigg
 import DeleteAction from "./DeleteAction"
 
 export const columns: ColumnDef<IStudent>[] = [
-    {
+    {   
         accessorKey: "status",
         header: "Trạng thái",
+        id: "Trạng thái",
         cell: ({ row }) => <ActiveAction row={row.original} />
     },
     {
         accessorKey: "id",
         header: "Mã Học Sinh",
+        id: "Mã Học Sinh",
         cell: ({ row }) => {
             return <EditAction id={row.original.id} data={row.original} />
         },
         enableHiding: false
     },
     {
+        id:"Tên học sinh",
         accessorKey: "name",
         header: ({ column }) => {
             return (
@@ -37,7 +40,8 @@ export const columns: ColumnDef<IStudent>[] = [
             )
         },
     },
-    {
+    { 
+        id:"Khối lớp",
         accessorKey: "grade",
         // header: "Email",
         header: ({ column }) => {
@@ -54,18 +58,22 @@ export const columns: ColumnDef<IStudent>[] = [
     },
     {
         accessorKey: "email",
-        header: "Email"
+        header: "Email",
+        id: "Email"
     },
     {
         accessorKey: "phone",
-        header: "Số điện thoại"
+        header: "Số điện thoại",
+        id: "Số điện thoại"
     },
     {
         accessorKey: "location",
-        header: "Địa chỉ"
+        header: "Địa chỉ",
+        id: "Địa chỉ",
     },
     {
         accessorKey: "lastContactDate",
+        id: "Liên lạc gần nhất",
         header: ({ column }) => {
             return (
                 <Button
@@ -84,10 +92,12 @@ export const columns: ColumnDef<IStudent>[] = [
 
     {
         accessorKey: "school",
-        header: "Phân loại trường"
+        header: "Phân loại trường",
+        id: "Phân loại trường"
     },
     {
         accessorKey: "entryTest",
+        id: "Điểm đầu vào",
         header: ({ column }) => {
             return (
                 <Button
@@ -102,24 +112,29 @@ export const columns: ColumnDef<IStudent>[] = [
     },
     {
         accessorKey: "social",
-        header: "Social"
+        header: "Social",
+        id: "Social"
     },
     {
         accessorKey: "wom",
-        header: "WOM"
+        header: "WOM",
+        id: "WOM"
     },
 
     {
         accessorKey: "channel",
+        id: "channel",
         header: "channel"
     },
     {
         accessorKey: "note",
-        header: "Ghi chú"
+        header: "Ghi chú",
+        id: "Ghi chú"
     },
     {
         accessorKey: "createAt",
         header: "Ngày tạo",
+        id: "Ngày tạo",
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.createAt as Timestamp, format: 'DD/MM/YYYY' })
         }
@@ -127,13 +142,14 @@ export const columns: ColumnDef<IStudent>[] = [
     {
         accessorKey: "uppateAt",
         header: "Ngày câp nhật",
+        id: "Ngày câp nhật",
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.updateAt as Timestamp, format: 'DD/MM/YYYY' })
         }
     },
 
     {
-        id: "actions",
+        id: "thao tác",
         cell: ({ row }) => {
             const student = row.original
             return (

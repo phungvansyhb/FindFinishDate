@@ -11,7 +11,6 @@ type Props = { id: React.Key, studentName: string }
 export default function DetailStudentAction({ id, studentName }: Props) {
     const [open, setOpen] = useState(false)
     const { data } = useGetDetailDoc({ queryKey: API_QUERY_KEY.GET_DETAIL_STUDENT, dbKey: DATABASE_KEY.STUDENT + '/' + id, enable: open })
-    console.log(data)
     const [isEdit, setEdit] = useState(false)
     return (
         <>

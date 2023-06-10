@@ -1,6 +1,6 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/dropdown-menu"
-import { convertTimestampFirebase } from "@/lib/utils"
-import { IRegisterForm } from "@/typedefs/IRegisterForm"
+import { VNCurrencyFormatter, convertTimestampFirebase } from "@/lib/utils"
+import { IRegisterForm, IRegisterFormDTO } from "@/typedefs/IRegisterForm"
 import { ColumnDef } from "@tanstack/react-table"
 import { Timestamp } from "firebase/firestore"
 import { MoreHorizontal, StickyNoteIcon } from "lucide-react"
@@ -10,14 +10,18 @@ import DeleteAction from "./DeleteAction"
 import EditAction from "./EditAction"
 import DetailStudentAction from "./DetailStudentAction"
 import DetailClassAction from "./DetailClassAction"
+import { ArrowUpDown } from "lucide-react"
+import { DAY_ARRAY } from '@/lib/utils'
 
-export const columns: ColumnDef<IRegisterForm>[] = [
+export const columns: ColumnDef<IRegisterFormDTO>[] = [
     {
+        id: "Trạng thái",
         accessorKey: "status",
         header: "Trạng thái",
         cell: ({ row }) => <ActiveAction row={row.original} />
     },
     {
+        id: "Mã phiếu đăng ký",
         accessorKey: "id",
         header: "Mã phiếu đăng ký",
         cell: ({ row }) => {
@@ -26,20 +30,23 @@ export const columns: ColumnDef<IRegisterForm>[] = [
         enableHiding: false
     },
     {
-        accessorKey: "className",
+        id: "Tên lớp học",
         header: "Lớp học",
+        accessorFn: (row) => row.class?.name,
         cell: ({ row }) => {
-            return row.original.classId ? <DetailClassAction id={row.original.classId} className={row.original.className} /> : row.original.className
+            return row.original.classId ? <DetailClassAction id={row.original.classId} className={row.original.class?.name} /> : row.original.class.name
+            // return row.original.class?.name
         },
     },
     {
-        accessorKey: "studentName",
+        id: "Tên học sinh",
+        accessorFn: (row) => row.student?.name,
         header: "Học sinh",
         cell: ({ row }) => {
-            return row.original.studentId ? <DetailStudentAction id={row.original.studentId} studentName={row.original.studentName} /> : row.original.studentName
-        },
+            return row.original.studentId ? <DetailStudentAction id={row.original.studentId} studentName={row.original.student.name} /> : row.original.student.name        },
     },
     {
+        id: "Ngày đóng tiền",
         accessorKey: "paymentDate",
         header: "Ngày đóng tiền",
         cell: ({ row }) => {
@@ -47,32 +54,87 @@ export const columns: ColumnDef<IRegisterForm>[] = [
         }
     },
     {
+        id: "Số tiền đã đóng",
         accessorKey: "receiveMoney",
-        header: "Số tiền đã đóng"
+        cell: ({ row }) => {
+            return VNCurrencyFormatter.format(parseInt(row.original.receiveMoney))
+        },
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="secondary"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Số tiền đã đóng
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        }
     },
     {
+        id: "Ngày bắt đầu học",
         accessorKey: "startDate",
-        header: "Ngày bắt đầu học",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="secondary"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Ngày bắt đầu học
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.startDate as Timestamp, format: 'DD/MM/YYYY' })
         }
     },
     {
+        id: "Giá tiền 1 buổi học",
         accessorKey: "lessonCost",
-        header: "Giá tiền 1 buổi"
+        cell: ({ row }) => {
+            return VNCurrencyFormatter.format(parseInt(row.original.lessonCost))
+        },
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="secondary"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Giá tiền 1 buổi học
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        }
     },
     {
+        id: "Lịch học",
         accessorKey: "schedule",
-        header: "Lịch học"
+        header: "Lịch học",
+        cell: ({ row }) => {
+            return row.original.schedule.map(item => <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">{DAY_ARRAY[item]}</div>)
+        }
     },
     {
+        id: "Ngày đóng tiền tiếp theo",
         accessorKey: "nextPaymentDate",
-        header: "Ngày đóng tiền tiếp theo",
+        header: ({ column }) => {
+            return (
+                <Button
+                    variant="secondary"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Ngày đóng tiền tiếp theo
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.nextPaymentDate as Timestamp, format: 'DD/MM/YYYY' })
         }
     },
     {
+        id: "Ngày tạo",
         accessorKey: "createAt",
         header: "Ngày tạo",
         cell: ({ row }) => {
@@ -80,6 +142,7 @@ export const columns: ColumnDef<IRegisterForm>[] = [
         }
     },
     {
+        id: "Ngày cập nhật",
         accessorKey: "uppateAt",
         header: "Ngày cập nhật",
         cell: ({ row }) => {
@@ -88,7 +151,8 @@ export const columns: ColumnDef<IRegisterForm>[] = [
     },
 
     {
-        id: "actions",
+        id: "Thao tác",
+        // id: "actions",
         cell: ({ row }) => {
             const student = row.original
             return (

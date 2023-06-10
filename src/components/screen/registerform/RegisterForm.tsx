@@ -114,7 +114,6 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.status = true;
         values.nextPaymentDate = (endDate() as dayjs.Dayjs).toDate()
-        console.log(values)
         beforeCreate(values)
         if (mode === 'create') {
             createRegisterMutation.mutate(values)
@@ -168,7 +167,6 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         value={student.name}
                                                         key={student.id}
                                                         onSelect={(value: any) => {
-                                                            console.log(student)
                                                             form.setValue("studentName", value)
                                                             form.setValue("studentId", student.id)
                                                         }}
@@ -231,7 +229,6 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         value={classroom.name}
                                                         key={classroom.id}
                                                         onSelect={(value: any) => {
-                                                            console.log(classroom)
                                                             form.setValue("className", value)
                                                             form.setValue("classId", classroom.id)
                                                         }}

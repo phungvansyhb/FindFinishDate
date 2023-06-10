@@ -1,4 +1,5 @@
 import { db } from '@/lib/firebase.base';
+import { DATABASE_KEY } from '@/lib/utils';
 import { DocumentData, QueryConstraint, addDoc, collection, doc, getDoc, getDocs, limit, orderBy, query, setDoc, updateDoc, where, startAfter, DocumentSnapshot } from 'firebase/firestore';
 
 class FirestoreService {
@@ -45,7 +46,25 @@ class FirestoreService {
       throw new Error('getDetailDoc fail')
     }
   }
-
+  public async getListRegisterFormDocs() {
+    try {
+      const result: DocumentData[] = []
+      const queryConstraint: QueryConstraint[] = []
+      // queryConstraint.push(where('isDeleted', '==', false))
+      const queryObj = query(collection(db, DATABASE_KEY.REGISTER_FORM), ...queryConstraint)
+      const querySnapshot = await getDocs(queryObj);
+      for (const doc of querySnapshot.docs){
+        const data = doc.data()
+        const student = await this.getDetailDoc(DATABASE_KEY.STUDENT + '/' + doc.data().studentId)
+        const classRoom = await this.getDetailDoc(DATABASE_KEY.CLASS + '/' + doc.data().classId)
+        result.push({ id: doc.id, student, class: classRoom, ...data })
+      }
+      return result
+    } catch (e) {
+      console.error(e);
+      throw new Error("get list doc error");
+    }
+  }
   async createDoc(key: string, data: { [x: string]: any }, customId?: string) {
     try {
       return customId ? await setDoc(doc(db, key, customId), data) : await addDoc(collection(db, key), data);

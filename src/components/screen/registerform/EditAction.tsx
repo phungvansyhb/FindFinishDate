@@ -1,18 +1,20 @@
 import { Button } from '@/components/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/sheet'
 import { convertTimestampFirebaseToDate } from '@/lib/utils'
-import { IRegisterForm } from '@/typedefs/IRegisterForm'
+import { IRegisterForm, IRegisterFormDTO } from '@/typedefs/IRegisterForm'
 import { Timestamp } from 'firebase/firestore'
 import { EditIcon } from 'lucide-react'
 import React, { useState } from 'react'
 import { RegisterForm } from './RegisterForm'
 
-type Props = { id: React.Key, data: IRegisterForm }
+type Props = { id: React.Key, data: IRegisterFormDTO }
 
 export default function EditAction({ id, data }: Props) {
     const [open, setOpen] = useState(false)
     const initValue: IRegisterForm = {
         ...data,
+        studentName: data.student.name,
+        className: data.class.name,
         nextPaymentDate: convertTimestampFirebaseToDate({ date: data.nextPaymentDate as Timestamp }),
         paymentDate: convertTimestampFirebaseToDate({ date: data.paymentDate as Timestamp }),
         startDate: convertTimestampFirebaseToDate({ date: data.startDate as Timestamp }),

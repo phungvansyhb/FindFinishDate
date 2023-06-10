@@ -13,11 +13,13 @@ export const columns: ColumnDef<IClass>[] = [
     {
         accessorKey: "status",
         header: "Trạng thái",
+        id: "Trạng thái",
         cell: ({ row }) => <ActiveAction row={row.original} />
     },
     {
         accessorKey: "id",
         header: "Mã Lớp",
+        id: "Mã Lớp",
         cell: ({ row }) => {
             return <EditAction id={row.original.id} data={row.original} />
         },
@@ -25,6 +27,7 @@ export const columns: ColumnDef<IClass>[] = [
     },
     {
         accessorKey: "name",
+        id: "Tên lớp",
         header: ({ column }) => {
             return (
                 <Button
@@ -40,14 +43,17 @@ export const columns: ColumnDef<IClass>[] = [
     {
         accessorKey: "description",
         header: "Mô tả",
+        id: "Mô tả",
     },
     {
         accessorKey: "teacher",
-        header: "Giảng viên"
+        header: "Giảng viên",
+        id: "Giảng viên"
     },
     {
         accessorKey: "createAt",
         header: "Ngày tạo",
+        id: "Ngày tạo",
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.createAt as Timestamp, format: 'DD/MM/YYYY' })
         }
@@ -55,13 +61,14 @@ export const columns: ColumnDef<IClass>[] = [
     {
         accessorKey: "uppateAt",
         header: "Ngày cập nhật",
+        id: "Ngày cập nhật",
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.updateAt as Timestamp, format: 'DD/MM/YYYY' })
         }
     },
 
     {
-        id: "actions",
+        id: "Thao tác",
         cell: ({ row }) => {
             const student = row.original
             return (
@@ -75,7 +82,7 @@ export const columns: ColumnDef<IClass>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DeleteAction id={student.id} />
-                      
+
                     </DropdownMenuContent>
                 </DropdownMenu>
             )

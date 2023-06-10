@@ -14,11 +14,9 @@ export const CurrencyInput = React.forwardRef<HTMLInputElement, Props>(
             const sanitizedValue = inputValue.replace(/[^0-9]/g, '');
             setValue(sanitizedValue);
         };
-
         const formatCurrency = (value: any) => {
             return VNCurrencyFormatter.format(value);
         };
-
         return (
             <input
                 className={cn(
