@@ -83,7 +83,7 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
             return row.original.studentId ? (
                 <DetailStudentAction
                     id={row.original.studentId}
-                    studentName={row.original.student.name}
+                    studentName={row.original.student?.name}
                 />
             ) : (
                 row.original.student.name

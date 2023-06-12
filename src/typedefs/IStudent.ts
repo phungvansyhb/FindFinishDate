@@ -9,8 +9,9 @@ export interface IStudent extends IBase {
     phone: string,
     lastContactDate: Timestamp | Date,
     noteContact: string,
-    gradeName: string,
-    gradeId: number,
+    grade: GRADE,
+    classId: string,
+    className: string,
     school: string,
     entryTest: number, // diem dau vao
     social: string, //
@@ -21,7 +22,7 @@ export interface IStudent extends IBase {
     status: boolean,
 }
 export interface IStudentDTO extends IStudent {
-    grade: IClass
+    classRoom: IClass
 }
 
 export enum WOM {
@@ -36,7 +37,6 @@ export enum CHANNEL {
     PHONE = 'Phone',
     OTHER = 'Khác'
 }
-/* despecated */
 export enum GRADE {
     GRADE5 = '5',
     GRADE6 = '6',

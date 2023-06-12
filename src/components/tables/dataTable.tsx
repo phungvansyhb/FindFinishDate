@@ -101,7 +101,6 @@ export function DataTable<TData, TValue>({
                     <DropdownMenuContent className="p-4" align="end">
                         <div className="grid grid-cols-4 py-4 gap-4 ">
                             {table.getVisibleLeafColumns().map(column => {
-                                console.log(column.columnDef.meta)
                                 const dataType = (column.columnDef.meta as { type: string })?.type;
                                 if (column.getCanFilter()) {
                                     switch (dataType) {

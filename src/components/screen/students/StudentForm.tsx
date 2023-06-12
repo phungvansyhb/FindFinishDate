@@ -26,11 +26,12 @@ const formSchema = z.object({
     }),
     parent: z.string().optional(),
     noteContact: z.string().optional(),
-    gradeName: z.any().optional(),
-    gradeId: z.any(),
+    grade: z.any().optional(),
+    className: z.string(),
+    classId: z.any(),
     school: z.string().optional(),
     entryTest: z.any().optional(),
-    social: z.string().optional(),
+    // social: z.string().optional(),
     wom: z.nativeEnum(WOM).optional(),
     channel: z.nativeEnum(CHANNEL).optional(),
     note: z.string().optional(),
@@ -55,7 +56,7 @@ export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Pr
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: initialValue || {
-            gradeName: '',
+            grade: '',
             entryTest: '5',
             channel: CHANNEL.ZALO,
             status: true,
@@ -104,68 +105,27 @@ export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Pr
                 />
                 <div className="grid grid-cols-2 gap-4">
 
-                    {listClassRoom && <FormField
+                    <FormField
                         control={form.control}
-                        name="gradeName"
+                        name="grade"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Chọn lớp</FormLabel>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <FormControl>
-                                            <Button
-                                                variant="outline"
-                                                role="combobox"
-                                                className={cn(
-                                                    "w-full justify-between",
-                                                    !field.value && "text-muted-foreground"
-                                                )}
-                                            >
-                                                {field.value
-                                                    ? listClassRoom?.find(
-                                                        (std) => std.name?.toLowerCase() === field.value?.toLowerCase()
-                                                    )?.name
-                                                    : "Chọn lớp"}
-                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                            </Button>
-                                        </FormControl>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-full p-0">
-                                        <Command >
-                                            <CommandInput placeholder="Tìm kiếm lớp học"
-                                            />
-                                            <CommandEmpty >
-                                                Not found...
-                                            </CommandEmpty>
-                                            <CommandGroup >
-                                                {listClassRoom?.map((classRoom) => (
-                                                    <CommandItem
-                                                        value={classRoom.name}
-                                                        key={classRoom.id}
-                                                        onSelect={(value: any) => {
-                                                            form.setValue("gradeName", value)
-                                                            form.setValue("gradeId", classRoom.id)
-                                                        }}
-                                                    >
-                                                        <Check
-                                                            className={cn(
-                                                                "mr-2 h-4 w-4",
-                                                                classRoom.name?.toLowerCase() === field.value?.toLowerCase()
-                                                                    ? "opacity-100"
-                                                                    : "opacity-0"
-                                                            )}
-                                                        />
-                                                        {classRoom.name}
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </Command>
-                                    </PopoverContent>
-                                </Popover>
+                                <FormLabel>Khối </FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Chọn khối" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {Object.values(GRADE).map(item =>
+                                            <SelectItem value={item} key={item}>{item}</SelectItem>)}
+                                    </SelectContent>
+                                </Select>
                                 <FormMessage />
                             </FormItem>
                         )}
-                    />}
+                    />
                     <FormField
                         control={form.control}
                         name="entryTest"
@@ -180,6 +140,68 @@ export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Pr
                         )}
                     />
                 </div>
+                {listClassRoom && <FormField
+                    control={form.control}
+                    name="className"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Chọn lớp</FormLabel>
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <FormControl>
+                                        <Button
+                                            variant="outline"
+                                            role="combobox"
+                                            className={cn(
+                                                "w-full justify-between",
+                                                !field.value && "text-muted-foreground"
+                                            )}
+                                        >
+                                            {field.value
+                                                ? listClassRoom?.find(
+                                                    (std) => std.name?.toLowerCase() === field.value?.toLowerCase()
+                                                )?.name
+                                                : "Chọn lớp"}
+                                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                    </FormControl>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-full p-0">
+                                    <Command >
+                                        <CommandInput placeholder="Tìm kiếm lớp học"
+                                        />
+                                        <CommandEmpty >
+                                            Not found...
+                                        </CommandEmpty>
+                                        <CommandGroup >
+                                            {listClassRoom?.map((classRoom) => (
+                                                <CommandItem
+                                                    value={classRoom.name}
+                                                    key={classRoom.id}
+                                                    onSelect={(value: any) => {
+                                                        form.setValue("className", value)
+                                                        form.setValue("classId", classRoom.id)
+                                                    }}
+                                                >
+                                                    <Check
+                                                        className={cn(
+                                                            "mr-2 h-4 w-4",
+                                                            classRoom.name?.toLowerCase() === field.value?.toLowerCase()
+                                                                ? "opacity-100"
+                                                                : "opacity-0"
+                                                        )}
+                                                    />
+                                                    {classRoom.name}
+                                                </CommandItem>
+                                            ))}
+                                        </CommandGroup>
+                                    </Command>
+                                </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />}
                 <FormField
                     control={form.control}
                     name="note"
@@ -188,7 +210,7 @@ export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Pr
                             <FormLabel>Ghi chú </FormLabel>
                             <FormControl>
                                 <Textarea
-                                    className="resize"
+                                    className="resize-y"
                                     placeholder="Ghi chú cho học sinh"
                                     {...field}
                                 />
@@ -304,7 +326,7 @@ export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Pr
                                 <FormControl>
                                     <Textarea
                                         placeholder="Ghi chú nội dung chăm sóc"
-                                        className="resize-none"
+                                        className="resize-y"
                                         {...field}
                                     />
                                 </FormControl>

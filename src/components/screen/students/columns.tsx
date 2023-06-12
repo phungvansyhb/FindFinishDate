@@ -48,10 +48,15 @@ export const columns: ColumnDef<IStudentDTO>[] = [
         },
     },
     {
+        id: "Khối",
+        accessorFn: (row) => row.grade,
+        header : "Khối "
+    },
+    {
         id: "Lớp",
-        accessorFn: (row) => row.grade?.name,
+        accessorFn: (row) => row.classRoom?.name,
         cell: ({ row }) => {
-            return row.original.grade ? row.original.grade.name : ""
+            return row.original.classRoom ? row.original.classRoom?.name : ""
         }
     },
     {
@@ -124,17 +129,17 @@ export const columns: ColumnDef<IStudentDTO>[] = [
             );
         },
     },
-    {
-        accessorKey: "social",
-        id: "Social",
-        header: () => {
-            return (
-                <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-                    Social
-                </div>
-            );
-        },
-    },
+    // {
+    //     accessorKey: "social",
+    //     id: "Social",
+    //     header: () => {
+    //         return (
+    //             <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+    //                 Social
+    //             </div>
+    //         );
+    //     },
+    // },
     {
         accessorKey: "wom",
         id: "WOM",

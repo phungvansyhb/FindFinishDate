@@ -78,8 +78,8 @@ class FirestoreService {
       const querySnapshot = await getDocs(queryObj);
       for (const doc of querySnapshot.docs) {
         const data = doc.data()
-        const classRoom = await this.getDetailDoc(DATABASE_KEY.CLASS + '/' + doc.data().gradeId)
-        result.push({ ...data, id: doc.id, grade: classRoom })
+        const classRoom = await this.getDetailDoc(DATABASE_KEY.CLASS + '/' + doc.data().classId)
+        result.push({ ...data, id: doc.id, classRoom: classRoom })
       }
       return result
     } catch (e) {
