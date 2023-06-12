@@ -1,3 +1,4 @@
+import { Button } from "@/components/button"
 import { DropdownMenuItem } from "@/components/dropdown-menu"
 import { API_QUERY_KEY, DATABASE_KEY } from "@/lib/utils"
 import { useDeleteDoc } from "@/services/hookBase.service"
@@ -8,13 +9,11 @@ export default function DeleteAction({ id }: { id: React.Key }) {
     const queryClient = useQueryClient()
     const deleteMutation = useDeleteDoc({ queryClient, dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: API_QUERY_KEY.GET_LIST_REGISTERFORM })
     return (
-        <DropdownMenuItem
+        <Button
+            variant={'secondary'}
             onClick={() => deleteMutation.mutate(id)}
         >
-            <div className="flex items-center gap-2 cursor-pointer">
-
-                <Trash2Icon size={18} /> Xoá
-            </div>
-        </DropdownMenuItem>
+            <Trash2Icon size={18} />
+        </Button>
     )
 }

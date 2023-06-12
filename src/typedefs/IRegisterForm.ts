@@ -19,5 +19,5 @@ export interface IRegisterForm extends IBase {
 }
 export interface IRegisterFormDTO extends IRegisterForm {
     student: IStudent,
-    class: IClass
+    classRoom: IClass
 }

@@ -95,3 +95,8 @@ export const API_QUERY_KEY = {
     GET_DETAIL_STUDENT: 'get_detail_student',
     GET_DETAIL_CLASSROOM: 'get_detail_classroom',
 }
+export const COLUMNDATA_TYPE = {
+    STRING: 'string',
+    DATE: 'date',
+    BOOLEAN: 'boolean'
+}

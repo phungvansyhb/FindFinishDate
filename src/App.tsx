@@ -39,11 +39,11 @@ function App() {
       toast({ description: "Đăng nhập thất bại. Vui lòng thử lại!", variant: 'destructive', })
     }
   }
-
+  
   if (checkCredential(credential.uname, credential.pw))
     return (
       <>
-        <Tabs defaultValue={TABS.REGISTER} className="w-full ">
+        <Tabs defaultValue={TABS.REGISTER} className="w-full " onValueChange={e => console.log(e)}>
           <TabsList className="grid grid-cols-3">
             <TabsTrigger value={TABS.REGISTER}>Đăng ký</TabsTrigger>
             <TabsTrigger value={TABS.STUDENTS}>Học sinh</TabsTrigger>

@@ -7,7 +7,7 @@ import React, { useState } from 'react'
 import { ClassroomForm } from './ClassRoomForm'
 import { IClass } from '@/typedefs/IClass'
 
-type Props = { id: React.Key, data: IClass }
+type Props = { id?: React.Key, data: IClass }
 
 export default function EditAction({ id, data }: Props) {
     const [open, setOpen] = useState(false)
@@ -20,7 +20,17 @@ export default function EditAction({ id, data }: Props) {
     return (
         <>
             <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger><div className="font-semibold text-blue-500 cursor-pointer">{id}</div></SheetTrigger>
+                <SheetTrigger className='border-none' >
+                    {id ?
+                        <div className="font-semibold text-blue-500 cursor-pointer">{id}</div>
+                        :
+                        <Button
+                            variant={'secondary'}
+                        >
+                            <EditIcon size={18} />
+                        </Button>
+                    }
+                </SheetTrigger>
                 <SheetContent size={'full'} className='h-screen overflow-y-auto pb-20'>
                     <SheetHeader>
                         <SheetTitle className='flex items-center gap-4'>

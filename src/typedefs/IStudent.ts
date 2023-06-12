@@ -1,26 +1,29 @@
 import { Timestamp } from "firebase/firestore";
 import { IBase } from "./IBase";
+import { IClass } from "./IClass";
 
 export interface IStudent extends IBase {
-    // code : string ,
     name: string,
     email: string,
     parent: string,
     phone: string,
     lastContactDate: Timestamp | Date,
     noteContact: string,
-    grade: GRADE,
+    gradeName: string,
+    gradeId: number,
     school: string,
     entryTest: number, // diem dau vao
     social: string, //
     wom: WOM,
     channel: CHANNEL,
-    // source : string ,
     note: string,
     location: string,
     status: boolean,
-    // classID : string
 }
+export interface IStudentDTO extends IStudent {
+    grade: IClass
+}
+
 export enum WOM {
     P = 'P',
     S = 'S',
@@ -33,6 +36,7 @@ export enum CHANNEL {
     PHONE = 'Phone',
     OTHER = 'Khác'
 }
+/* despecated */
 export enum GRADE {
     GRADE5 = '5',
     GRADE6 = '6',

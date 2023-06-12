@@ -7,14 +7,14 @@ import { EditIcon } from 'lucide-react'
 import React, { useState } from 'react'
 import { RegisterForm } from './RegisterForm'
 
-type Props = { id: React.Key, data: IRegisterFormDTO }
+type Props = { id?: React.Key, data: IRegisterFormDTO }
 
 export default function EditAction({ id, data }: Props) {
     const [open, setOpen] = useState(false)
     const initValue: IRegisterForm = {
         ...data,
-        studentName: data.student.name,
-        className: data.class.name,
+        studentName: data.student?.name,
+        className: data.classRoom?.name,
         nextPaymentDate: convertTimestampFirebaseToDate({ date: data.nextPaymentDate as Timestamp }),
         paymentDate: convertTimestampFirebaseToDate({ date: data.paymentDate as Timestamp }),
         startDate: convertTimestampFirebaseToDate({ date: data.startDate as Timestamp }),
@@ -25,7 +25,17 @@ export default function EditAction({ id, data }: Props) {
     return (
         <>
             <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger><div className="font-semibold text-blue-500 cursor-pointer">{id}</div></SheetTrigger>
+                <SheetTrigger className='border-none'>
+                    {id ?
+                        <div className="font-semibold text-blue-500 cursor-pointer">{id}</div>
+                        :
+                        <Button
+                            variant={'secondary'}
+                        >
+                            <EditIcon size={18} />
+                        </Button>
+                    }
+                </SheetTrigger>
                 <SheetContent size={'full'} className='h-screen overflow-y-auto pb-20'>
                     <SheetHeader>
                         <SheetTitle className='flex items-center gap-4'>

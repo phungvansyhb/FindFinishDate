@@ -10,12 +10,11 @@ export default function CheckDateFee({ targetDateStr }: any) {
     parseInt(targetDateParts[1]) - 1,
     parseInt(targetDateParts[0])
   );
-  console.log(targetDate)
+
   const differenceInDays = Math.floor(
     (targetDate.getTime() - currentDate.getTime()) / (1000 * 3600 * 24)
   );
 
-  console.log(differenceInDays)
   useEffect(() => {
     if (differenceInDays === 0) {
       setError(true);

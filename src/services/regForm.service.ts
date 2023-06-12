@@ -6,6 +6,5 @@ export function useGetListRegisterForm() {
     return useQuery({
         queryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM],
         queryFn: () => fireBaseService.getListRegisterFormDocs(),
-
     })
 }

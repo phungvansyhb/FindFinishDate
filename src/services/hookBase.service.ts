@@ -5,19 +5,18 @@ import fireBaseService from "./fireBase.service";
 
 
 
-export function useGetListDoc({ queryKey, dbKey, enable = true }: { queryKey: string, dbKey: string, enable?: boolean }) {
+export function useGetListDoc({ queryKey, dbKey, enable = true  , whereClause }: { queryKey: string, dbKey: string, enable?: boolean , whereClause? :[string, '==' | '!=', any][]  }) {
     return useQuery({
         queryKey: [queryKey],
-        queryFn: () => fireBaseService.getListDocs({ key: dbKey }),
+        queryFn: () => fireBaseService.getListDocs({ key: dbKey , whereClause }),
         enabled: enable
     })
 }
-export function useGetDetailDoc({ queryKey, dbKey, enable = true }: { queryKey: string, dbKey: string, enable?: boolean }) {
+export function useGetDetailDoc({ queryKey, dbKey, enable = true  }: { queryKey: string, dbKey: string, enable?: boolean }) {
     return useQuery({
         queryKey: [queryKey],
         queryFn: () => fireBaseService.getDetailDoc(dbKey),
         enabled: enable,
-
     })
 }
 export function useCreateDoc({ queryClient, successHandler, invalidateQueryKey, dbKey }: { queryClient: QueryClient, successHandler?: () => void, invalidateQueryKey: string[], dbKey: string }) {

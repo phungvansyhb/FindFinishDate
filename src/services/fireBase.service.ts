@@ -13,6 +13,7 @@ class FirestoreService {
         }
       }
       queryConstraint.push(where('isDeleted', '==', false))
+      // queryConstraint.push(where('status', '==', true))
       if (count) {
         queryConstraint.push(limit(count))
       }
@@ -40,7 +41,10 @@ class FirestoreService {
     try {
       const docRef = segment ? doc(db, key, ...segment) : doc(db, key);
       const document = await getDoc(docRef)
-      return document.data()
+      if (document.exists() && document.data().isDeleted === false && document.data().status === true) {
+        return document.data()
+      }
+      return null
     } catch (e) {
       console.error(e)
       throw new Error('getDetailDoc fail')
@@ -50,19 +54,37 @@ class FirestoreService {
     try {
       const result: DocumentData[] = []
       const queryConstraint: QueryConstraint[] = []
-      // queryConstraint.push(where('isDeleted', '==', false))
+      queryConstraint.push(where('isDeleted', '==', false))
       const queryObj = query(collection(db, DATABASE_KEY.REGISTER_FORM), ...queryConstraint)
       const querySnapshot = await getDocs(queryObj);
-      for (const doc of querySnapshot.docs){
+      for (const doc of querySnapshot.docs) {
         const data = doc.data()
         const student = await this.getDetailDoc(DATABASE_KEY.STUDENT + '/' + doc.data().studentId)
         const classRoom = await this.getDetailDoc(DATABASE_KEY.CLASS + '/' + doc.data().classId)
-        result.push({ id: doc.id, student, class: classRoom, ...data })
+        result.push({ ...data, id: doc.id, student, classRoom })
       }
       return result
     } catch (e) {
       console.error(e);
-      throw new Error("get list doc error");
+      throw new Error("get list reg doc error");
+    }
+  }
+  public async getListStudentDocs() {
+    try {
+      const result: DocumentData[] = []
+      const queryConstraint: QueryConstraint[] = []
+      queryConstraint.push(where('isDeleted', '==', false))
+      const queryObj = query(collection(db, DATABASE_KEY.STUDENT), ...queryConstraint)
+      const querySnapshot = await getDocs(queryObj);
+      for (const doc of querySnapshot.docs) {
+        const data = doc.data()
+        const classRoom = await this.getDetailDoc(DATABASE_KEY.CLASS + '/' + doc.data().gradeId)
+        result.push({ ...data, id: doc.id, grade: classRoom })
+      }
+      return result
+    } catch (e) {
+      console.error(e);
+      throw new Error("get list student doc error");
     }
   }
   async createDoc(key: string, data: { [x: string]: any }, customId?: string) {

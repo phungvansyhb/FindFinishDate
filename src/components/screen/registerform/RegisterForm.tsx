@@ -58,9 +58,23 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
     const numberLesson = useMemo(() => {
         return Math.floor(money / moneyPerLesson)
     }, [money, moneyPerLesson])
+    function findCourseEndDate() {
+        if (schedule && schedule?.length !== 0) {
+            let currentDate = startDate;
+            let remainSessions = numberLesson;
+            while (remainSessions > 0) {
+                if (schedule.includes(currentDate.day())) {
+                    remainSessions--;
+                }
+                currentDate = currentDate.add(1, 'day');
+            }
+            return currentDate;
+        }
+        else return false
+    }
     const endDate = useMemo(() => findCourseEndDate, [schedule, startDate, numberLesson])
-    const { data: listStudent } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_STUDENT, dbKey: DATABASE_KEY.STUDENT })
-    const { data: listClass } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS })
+    const { data: listStudent } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_STUDENT, dbKey: DATABASE_KEY.STUDENT, whereClause: [["status", '==', true]] })
+    const { data: listClassRoom } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS, whereClause: [["status", '==', true]] })
     const createRegisterMutation = useCreateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
     const updateRegisterMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
     const form = useForm<z.infer<typeof formSchema>>({
@@ -80,20 +94,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
         },
     })
 
-    function findCourseEndDate() {
-        if (schedule && schedule?.length !== 0) {
-            let currentDate = startDate;
-            let remainSessions = numberLesson;
-            while (remainSessions > 0) {
-                if (schedule.includes(currentDate.day())) {
-                    remainSessions--;
-                }
-                currentDate = currentDate.add(1, 'day');
-            }
-            return currentDate;
-        }
-        else return false
-    }
+
     function handleAddSchedule(date: number) {
         const temp = new Set(schedule);
         if (temp.has(date)) {
@@ -145,7 +146,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             >
                                                 {field.value
                                                     ? listStudent?.find(
-                                                        (std) => std.name?.toLowerCase() === field.value.toLowerCase()
+                                                        (std) => std.name?.toLowerCase() === field.value?.toLowerCase()
                                                     )?.name
                                                     : "Chọn học sinh"}
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -157,9 +158,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             <CommandInput placeholder="Tìm kiếm học sinh..."
                                             />
                                             <CommandEmpty >
-                                                <Button onClick={(value: any) => {
-                                                    form.setValue("studentName", value)
-                                                }}>Add</Button>
+                                                Not found ...
                                             </CommandEmpty>
                                             <CommandGroup >
                                                 {listStudent?.map((student) => (
@@ -174,7 +173,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                student.name?.toLowerCase() === field.value.toLowerCase()
+                                                                student.name?.toLowerCase() === field.value?.toLowerCase()
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
@@ -190,7 +189,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                             </FormItem>
                         )}
                     />}
-                    {listClass && <FormField
+                    {listClassRoom && <FormField
                         control={form.control}
                         name="className"
                         render={({ field }) => (
@@ -208,8 +207,8 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                 )}
                                             >
                                                 {field.value
-                                                    ? listClass?.find(
-                                                        (classroom) => classroom.name?.toLowerCase() === field.value.toLowerCase()
+                                                    ? listClassRoom?.find(
+                                                        (classroom) => classroom.name?.toLowerCase() === field.value?.toLowerCase()
                                                     )?.name
                                                     : "Chọn lớp học"}
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -221,10 +220,10 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             <CommandInput placeholder="Tìm kiếm lớp học..."
                                             />
                                             <CommandEmpty >
-                                                Not found
+                                                Not found...
                                             </CommandEmpty>
                                             <CommandGroup >
-                                                {listClass?.map((classroom) => (
+                                                {listClassRoom?.map((classroom) => (
                                                     <CommandItem
                                                         value={classroom.name}
                                                         key={classroom.id}
@@ -236,7 +235,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                classroom.name?.toLowerCase() === field.value.toLowerCase()
+                                                                classroom.name?.toLowerCase() === field.value?.toLowerCase()
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
@@ -300,7 +299,9 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         name="startDate"
 
                         render={({ field }) => (
-                            <FormItem onChange={e => setStartDate(dayjs(e.timeStamp))} className="flex-1">
+                            <FormItem
+
+                                className="flex-1">
                                 <FormLabel className="block">Ngày bắt đầu dự kiến : </FormLabel>
                                 <Popover>
                                     <PopoverTrigger asChild>
@@ -325,7 +326,12 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                         <Calendar
                                             mode="single"
                                             selected={field.value}
-                                            onSelect={field.onChange}
+                                            onSelect={e => {
+                                                // console.log(e)
+                                                setStartDate(dayjs(e))
+                                                field.onChange(e)
+                                            }
+                                            }
                                             disabled={(date) =>
                                                 date < new Date() || date < new Date("1900-01-01")
                                             }
