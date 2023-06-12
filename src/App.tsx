@@ -45,9 +45,9 @@ function App() {
       <>
         <Tabs defaultValue={TABS.REGISTER} className="w-full ">
           <TabsList className="grid grid-cols-3">
-            <TabsTrigger value={TABS.REGISTER}>Register</TabsTrigger>
-            <TabsTrigger value={TABS.STUDENTS}>Student</TabsTrigger>
-            <TabsTrigger value={TABS.CLASSROOM}>ClassRoom</TabsTrigger>
+            <TabsTrigger value={TABS.REGISTER}>Đăng ký</TabsTrigger>
+            <TabsTrigger value={TABS.STUDENTS}>Học sinh</TabsTrigger>
+            <TabsTrigger value={TABS.CLASSROOM}>Lớp học</TabsTrigger>
           </TabsList>
           <TabsContent value={TABS.REGISTER}>
             <RegisterManage />

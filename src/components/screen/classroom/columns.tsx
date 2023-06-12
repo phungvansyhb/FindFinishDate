@@ -12,14 +12,26 @@ import EditAction from "./EditAction"
 export const columns: ColumnDef<IClass>[] = [
     {
         accessorKey: "status",
-        header: "Trạng thái",
         id: "Trạng thái",
+        header: () => {
+            return (
+              <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                Trạng thái
+              </div>
+            );
+          },
         cell: ({ row }) => <ActiveAction row={row.original} />
     },
     {
         accessorKey: "id",
-        header: "Mã Lớp",
         id: "Mã Lớp",
+        header: () => {
+            return (
+              <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                Mã Lớp
+              </div>
+            );
+          },
         cell: ({ row }) => {
             return <EditAction id={row.original.id} data={row.original} />
         },
@@ -34,7 +46,9 @@ export const columns: ColumnDef<IClass>[] = [
                     variant="secondary"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Name
+                    <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                    Tên lớp
+              </div>
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -42,17 +56,35 @@ export const columns: ColumnDef<IClass>[] = [
     },
     {
         accessorKey: "description",
-        header: "Mô tả",
         id: "Mô tả",
+        header: () => {
+            return (
+              <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                Mô tả
+              </div>
+            );
+          },
     },
     {
         accessorKey: "teacher",
-        header: "Giảng viên",
-        id: "Giảng viên"
+        id: "Giảng viên",
+        header: () => {
+            return (
+              <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                Giảng viên
+              </div>
+            );
+          },
     },
     {
         accessorKey: "createAt",
-        header: "Ngày tạo",
+        header: () => {
+            return (
+              <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                Ngày tạo
+              </div>
+            );
+          },
         id: "Ngày tạo",
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.createAt as Timestamp, format: 'DD/MM/YYYY' })
@@ -60,7 +92,13 @@ export const columns: ColumnDef<IClass>[] = [
     },
     {
         accessorKey: "uppateAt",
-        header: "Ngày cập nhật",
+        header: () => {
+            return (
+              <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                Ngày cập nhật
+              </div>
+            );
+          },
         id: "Ngày cập nhật",
         cell: ({ row }) => {
             return convertTimestampFirebase({ date: row.original.updateAt as Timestamp, format: 'DD/MM/YYYY' })

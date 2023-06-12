@@ -6,16 +6,16 @@ import { EditIcon } from 'lucide-react'
 import React, { useState } from 'react'
 import { ClassroomForm } from '../classroom/ClassRoomForm'
 
-type Props = { id: React.Key, className: string }
+type Props = { id: React.Key, classRoomName: string }
 
-export default function DetailClassAction({ id, className }: Props) {
+export default function DetailClassAction({ id, classRoomName }: Props) {
     const [open, setOpen] = useState(false)
     const { data } = useGetDetailDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS + '/' + id, enable: open })
     const [isEdit, setEdit] = useState(false)
     return (
         <>
             <Sheet open={open} onOpenChange={setOpen}>
-                <SheetTrigger><div className="font-semibold text-blue-500 cursor-pointer">{className}</div></SheetTrigger>
+                <SheetTrigger><div className="font-semibold text-blue-500 cursor-pointer whitespace-nowrap">{classRoomName}</div></SheetTrigger>
                 <SheetContent size={'lg'} className='h-screen overflow-y-auto'>
                     <SheetHeader>
                         <SheetTitle className='flex items-center gap-4'>
