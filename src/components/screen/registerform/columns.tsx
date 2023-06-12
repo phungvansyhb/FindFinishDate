@@ -19,6 +19,8 @@ import DetailStudentAction from "./DetailStudentAction";
 import DetailClassAction from "./DetailClassAction";
 import { ArrowUpDown } from "lucide-react";
 import { DAY_ARRAY } from "@/lib/utils";
+import { useState } from "react";
+import CheckDateFee from "./CheckDateFee";
 
 export const columns: ColumnDef<IRegisterFormDTO>[] = [
   {
@@ -41,21 +43,23 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
       return <EditAction id={row.original.id} data={row.original} />;
     },
     header: () => {
-        return (
-          <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-            Mã phiếu đăng ký
-          </div>
-    )},
+      return (
+        <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+          Mã phiếu đăng ký - Chỉnh sửa
+        </div>
+      );
+    },
     enableHiding: false,
   },
   {
     id: "Tên lớp học",
     header: () => {
-        return (
+      return (
         <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-            Lớp học
+          Lớp học
         </div>
-    )},
+      );
+    },
     accessorFn: (row) => row.class?.name,
     cell: ({ row }) => {
       return row.original.classId ? (
@@ -73,11 +77,12 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
     id: "Tên học sinh",
     accessorFn: (row) => row.student?.name,
     header: () => {
-        return (
+      return (
         <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-            Học sinh
+          Học sinh
         </div>
-    )},
+      );
+    },
     cell: ({ row }) => {
       return row.original.studentId ? (
         <DetailStudentAction
@@ -93,11 +98,12 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
     id: "Ngày đóng tiền",
     accessorKey: "paymentDate",
     header: () => {
-        return (
+      return (
         <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-            Ngày đóng tiền
+          Ngày đóng tiền
         </div>
-    )},
+      );
+    },
     cell: ({ row }) => {
       return convertTimestampFirebase({
         date: row.original.paymentDate as Timestamp,
@@ -172,11 +178,12 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
     id: "Lịch học",
     accessorKey: "schedule",
     header: () => {
-        return (
+      return (
         <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-            Lịch học
+          Lịch học
         </div>
-    )},
+      );
+    },
     cell: ({ row }) => {
       return row.original.schedule.map((item) => (
         <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">
@@ -202,10 +209,12 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
       );
     },
     cell: ({ row }) => {
-      return convertTimestampFirebase({
+      const nextPaymentDate = convertTimestampFirebase({
         date: row.original.nextPaymentDate as Timestamp,
         format: "DD/MM/YYYY",
-      });
+      })
+      if(!nextPaymentDate) return
+      return <CheckDateFee targetDateStr={String(nextPaymentDate)}/>
     },
   },
   {

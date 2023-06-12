@@ -145,7 +145,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             >
                                                 {field.value
                                                     ? listStudent?.find(
-                                                        (std) => std.name?.toLowerCase() === field.value
+                                                        (std) => std.name?.toLowerCase() === field.value.toLowerCase()
                                                     )?.name
                                                     : "Chọn học sinh"}
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -174,7 +174,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                student.name?.toLowerCase() === field.value
+                                                                student.name?.toLowerCase() === field.value.toLowerCase()
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}
@@ -209,7 +209,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             >
                                                 {field.value
                                                     ? listClass?.find(
-                                                        (classroom) => classroom.name?.toLowerCase() === field.value
+                                                        (classroom) => classroom.name?.toLowerCase() === field.value.toLowerCase()
                                                     )?.name
                                                     : "Chọn lớp học"}
                                                 <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -236,7 +236,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         <Check
                                                             className={cn(
                                                                 "mr-2 h-4 w-4",
-                                                                classroom.name?.toLowerCase() === field.value
+                                                                classroom.name?.toLowerCase() === field.value.toLowerCase()
                                                                     ? "opacity-100"
                                                                     : "opacity-0"
                                                             )}

@@ -13,7 +13,7 @@ export default function DeleteAction({ id }: { id: React.Key }) {
         >
             <div className="flex items-center gap-2 cursor-pointer">
 
-                <Trash2Icon size={18} /> Delete
+                <Trash2Icon size={18} /> Xoá
             </div>
         </DropdownMenuItem>
     )
