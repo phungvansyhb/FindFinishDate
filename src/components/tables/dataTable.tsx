@@ -116,7 +116,7 @@ export function DataTable<TData, TValue>({
                                                         </SelectTrigger>
                                                         <SelectContent>
                                                             <SelectItem value={"true"}>Có</SelectItem>
-                                                            <SelectItem value={"false"} >Không</SelectItem>
+                                                            <SelectItem value={"false"}>Không</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 </div>

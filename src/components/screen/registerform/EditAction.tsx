@@ -29,11 +29,8 @@ export default function EditAction({ id, data }: Props) {
                     {id ?
                         <div className="font-semibold text-blue-500 cursor-pointer">{id}</div>
                         :
-                        <Button
-                            variant={'secondary'}
-                        >
-                            <EditIcon size={18} />
-                        </Button>
+
+                        <EditIcon size={18} />
                     }
                 </SheetTrigger>
                 <SheetContent size={'full'} className='h-screen overflow-y-auto pb-20'>

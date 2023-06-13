@@ -132,7 +132,6 @@ export const columns: ColumnDef<IClass>[] = [
       const student = row.original;
       return (<div className="flex items-center">
         <DeleteAction id={student.id} />
-
         <EditAction data={student} />
       </div>)
     },

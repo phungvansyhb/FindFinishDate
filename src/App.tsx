@@ -21,8 +21,8 @@ function App() {
   const formSchema = z.object({
     userName: z.string(),
     password: z.string()
-
   })
+  const [tab, setTab] = useLocalStorage('findFinishDate::tab', { tabName: '' })
   function checkCredential(uname: string, pw: string) {
     return uname === import.meta.env.VITE_USERNAME && pw === import.meta.env.VITE_USERPASS
   }
@@ -39,12 +39,12 @@ function App() {
       toast({ description: "Đăng nhập thất bại. Vui lòng thử lại!", variant: 'destructive', })
     }
   }
-  
+
   if (checkCredential(credential.uname, credential.pw))
     return (
       <>
-        <Tabs defaultValue={TABS.REGISTER} className="w-full " onValueChange={e => console.log(e)}>
-          <TabsList className="grid grid-cols-3">
+        <Tabs defaultValue={tab.tabName} className="w-full " onValueChange={e => setTab({ tabName: e})}>
+          <TabsList className="grid grid-cols-3" >
             <TabsTrigger value={TABS.REGISTER}>Đăng ký</TabsTrigger>
             <TabsTrigger value={TABS.STUDENTS}>Học sinh</TabsTrigger>
             <TabsTrigger value={TABS.CLASSROOM}>Lớp học</TabsTrigger>
