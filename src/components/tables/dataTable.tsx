@@ -71,7 +71,7 @@ export function DataTable<TData, TValue>({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="ml-auto">
-                            <TableIcon /> Columns
+                            <TableIcon /> Cột
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
@@ -97,7 +97,12 @@ export function DataTable<TData, TValue>({
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <DropdownMenu >
-                    <DropdownMenuTrigger><FilterIcon /></DropdownMenuTrigger>
+                    <DropdownMenuTrigger>
+                        <Button className="ml-auto">
+                            <FilterIcon />Lọc
+                        </Button>
+
+                    </DropdownMenuTrigger>
                     <DropdownMenuContent className="p-4" align="end">
                         <div className="grid grid-cols-4 py-4 gap-4 ">
                             {table.getVisibleLeafColumns().map(column => {

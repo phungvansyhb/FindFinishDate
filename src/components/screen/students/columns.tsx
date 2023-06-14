@@ -41,7 +41,7 @@ export const columns: ColumnDef<IStudentDTO>[] = [
                     variant="secondary"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
-                    Name
+                    Tên
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
@@ -50,7 +50,7 @@ export const columns: ColumnDef<IStudentDTO>[] = [
     {
         id: "Khối",
         accessorFn: (row) => row.grade,
-        header : "Khối "
+        header: "Khối "
     },
     {
         id: "Lớp",
