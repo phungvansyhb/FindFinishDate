@@ -5,14 +5,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover"
 import { Textarea } from "@/components/textarea"
 import { API_QUERY_KEY, DATABASE_KEY, beforeCreate, cn } from "@/lib/utils"
+import fireBaseService from "@/services/fireBase.service"
 import { useCreateDoc, useGetListDoc, useUpdateBatchDoc, useUpdateDoc } from "@/services/hookBase.service"
 import { IAbsenceForm } from "@/typedefs/IAbsenceForm"
 import { IClass } from "@/typedefs/IClass"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react"
-import { SetStateAction, useState } from "react"
+import { SetStateAction, useCallback, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -43,15 +44,14 @@ export function AbsenceForm({ triggerDialog, initialValue, mode = 'create' }: Pr
 
     const createAbsenceMutation = useCreateDoc({
         queryClient, successHandler: () => {
-            updateRegisterForm.mutate([['classId', '==', form.watch('classId')], ['status', '==', true], ['isDeleted', '==', false], ['startDate', '>=', form.watch('absenceDate')]],)
             triggerDialog(false)
-        }, dbKey: DATABASE_KEY.ABSENCE_FORM, invalidateQueryKey: [API_QUERY_KEY.GETLIST_ABSENCEFORM]
+        }, dbKey: DATABASE_KEY.ABSENCE_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_ABSENCEFORM]
     })
+
     const updateAbsenceMutation = useUpdateDoc({
         queryClient, successHandler: () => {
-            updateRegisterForm.mutate([['classId', '==', form.watch('classId')], ['status', '==', true], ['isDeleted', '==', false]])
             triggerDialog(false)
-        }, dbKey: DATABASE_KEY.ABSENCE_FORM, invalidateQueryKey: [API_QUERY_KEY.GETLIST_ABSENCEFORM]
+        }, dbKey: DATABASE_KEY.ABSENCE_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_ABSENCEFORM]
     })
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -67,11 +67,17 @@ export function AbsenceForm({ triggerDialog, initialValue, mode = 'create' }: Pr
 
     const { data: listClassRoom } = useGetListDoc({ dbKey: DATABASE_KEY.CLASS, queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, whereClause: [['status', '==', true]] })
 
+
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.status = true;
         beforeCreate(values)
         if (mode === 'create') {
             createAbsenceMutation.mutate(values)
+            updateRegisterForm.mutate([
+                ['classId', '==', values.classId],
+                ['status', '==', true], 
+                ['isDeleted', '==', false] , 
+                ['startDate','<=',values.absenceDate] ])
         } else {
             updateAbsenceMutation.mutate({ ...values, id: initialValue?.id })
         }
@@ -173,7 +179,7 @@ export function AbsenceForm({ triggerDialog, initialValue, mode = 'create' }: Pr
                                     <PopoverContent className="w-auto p-0" align="start">
                                         <Calendar
                                             disabled={(date) =>
-                                                date < new Date() ||
+                                                // date < new Date() ||
                                                 !(seletedClass && seletedClass?.schedule ? seletedClass.schedule.includes(date.getDay()) : false)
                                             }
                                             mode="single"

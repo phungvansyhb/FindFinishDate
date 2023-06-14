@@ -13,7 +13,7 @@ export default function TeachAbsence() {
                 <CreateModal />
             </div>
             {data && !isLoading &&
-                <DataTable columns={columns} data={data as IAbsenceForm[]} tableName='student' />
+                <DataTable columns={columns} data={data as IAbsenceForm[]} tableName='absence' />
             }
         </section>
     )

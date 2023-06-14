@@ -6,16 +6,18 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "@/components/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover"
 import { API_QUERY_KEY, DATABASE_KEY, DAYS, beforeCreate, cn } from "@/lib/utils"
+import { useCheckTeacherAbsent } from "@/services/absence.service"
 import { useCreateDoc, useGetListDoc, useUpdateDoc } from "@/services/hookBase.service"
 import { IClass } from "@/typedefs/IClass"
-import { IRegisterForm } from "@/typedefs/IRegisterForm"
+import { IRegisterForm, IRegisterFormDTO } from "@/typedefs/IRegisterForm"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { format } from "date-fns"
 import dayjs from "dayjs"
 import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react"
-import { SetStateAction, useMemo, useState } from "react"
-import {  useForm } from "react-hook-form"
+import { SetStateAction, useCallback, useMemo, useState } from "react"
+import { useForm } from "react-hook-form"
+import { useDebounce } from "usehooks-ts"
 import * as z from "zod"
 
 
@@ -39,27 +41,40 @@ const formSchema = z.object({
 
 type Props = {
     triggerDialog: React.Dispatch<SetStateAction<boolean>>
-    initialValue?: Partial<IRegisterForm>
+    initialValue?: Partial<IRegisterFormDTO>
     mode?: 'view' | 'edit' | 'create'
 }
 
 export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: Props) {
     const queryClient = useQueryClient()
     const [startDate, setStartDate] = useState<dayjs.Dayjs>(dayjs())
+
     const [money, setmoney] = useState(() => {
         if (initialValue) {
             return parseInt(initialValue.receiveMoney as string)
         } else return 0
     })
+
     const [moneyPerLesson, setmoneyPerLesson] = useState(() => {
         if (initialValue) {
             return parseInt(initialValue.lessonCost as string)
         } else return 0
     })
 
+    const [selectedClass, setSelectedClass] = useState<IClass | undefined>(() => {
+        if (initialValue) {
+            return initialValue.classRoom
+        }
+    })
+
+    const debouncedMoney = useDebounce<number>(money, 800)
+    const debouncedmoneyPerLesson = useDebounce<number>(moneyPerLesson, 800)
     const numberLesson = useMemo(() => {
-        return Math.floor(money / moneyPerLesson)
-    }, [money, moneyPerLesson])
+        if (debouncedMoney !== 0 && debouncedmoneyPerLesson !== 0) {
+            return Math.floor(debouncedMoney / debouncedmoneyPerLesson)
+        }
+        return 0;
+    }, [debouncedMoney, debouncedmoneyPerLesson])
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -77,16 +92,32 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
             teacherAbsents: 0
         },
     })
-    const [selectedClass, setSelectedClass] = useState<IClass>()
+
+    // const teacherAbsents = form.watch('teacherAbsents')
+    const classId = form.watch('classId')
+
     function renderButtonSchedule(dayName: { value: number, label: string }) {
-        return <button type='button' className={selectedClass?.schedule?.includes(dayName.value) ? 'bg-black text-white font-bold' : ''}
+        return <button type='button' className={selectedClass?.schedule?.includes(dayName.value) ? 'bg-black text-white font-bold pointer-events-none' : 'pointer-events-none'}
         >{dayName.label}</button>
 
     }
-    function findCourseEndDate() {
+
+
+    const { data: listStudent } = useGetListDoc({ queryKey: classId, dbKey: DATABASE_KEY.STUDENT, whereClause: [["status", '==', true], ["classId", "==", classId]] })
+
+    const { data: listClassRoom } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS, whereClause: [["status", '==', true]] })
+
+    const createRegisterMutation = useCreateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
+
+    const updateRegisterMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
+
+    const { data: numberAbsenceDays } = useCheckTeacherAbsent(classId, startDate.toDate())
+
+    const findCourseEndDate = useCallback(() => {
         if (selectedClass?.schedule && selectedClass?.schedule?.length !== 0) {
+            console.log('run')
             let currentDate = startDate;
-            let remainSessions = numberLesson + form.watch('teacherAbsents');
+            let remainSessions = numberLesson + (numberAbsenceDays ? numberAbsenceDays : 0);
             while (remainSessions > 0) {
                 if (selectedClass?.schedule.includes(currentDate.day())) {
                     remainSessions--;
@@ -96,19 +127,16 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
             return currentDate;
         }
         else return false
-    }
+    }, [selectedClass, numberLesson, startDate, numberAbsenceDays])
     const endDate = useMemo(() => findCourseEndDate, [selectedClass, startDate, numberLesson])
-    const { data: listStudent } = useGetListDoc({ queryKey: form.getValues('classId'), dbKey: DATABASE_KEY.STUDENT, whereClause: [["status", '==', true], ["classId", "==", form.watch('classId')]] })
-    const { data: listClassRoom } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS, whereClause: [["status", '==', true]] })
-    const createRegisterMutation = useCreateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
-    const updateRegisterMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
-
 
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.status = true;
         values.nextPaymentDate = (endDate() as dayjs.Dayjs).toDate()
         beforeCreate(values)
+        // countTeacherAbsents.mutate({classId : values.classId , startDate : values.startDate})
         // console.log(values)
+        values.teacherAbsents = numberAbsenceDays
         if (mode === 'create') {
             createRegisterMutation.mutate(values)
         } else {
@@ -344,16 +372,10 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         <FormItem>
                             <FormLabel>Số tiền nộp</FormLabel>
                             <FormControl>
-                                <Input type="number" {...field} placeholder="Số tiền nộp" onChange={(e) => {
-                                    setmoney(e.target.valueAsNumber)
-                                    field.onChange(e)
-                                }
-                                }></Input>
-
-                                {/* <CurrencyInput {...field} value={money} setValue={(value) => {
+                                <CurrencyInput {...field} value={money} setValue={(value) => {
                                     setmoney(value)
                                     field.onChange(value)
-                                }} /> */}
+                                }} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -366,15 +388,10 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         <FormItem>
                             <FormLabel>Giá mỗi buổi học</FormLabel>
                             <FormControl>
-                                <Input type="number" {...field} placeholder="Giá một buổi học" onChange={(e) => {
-                                    setmoneyPerLesson(e.target.valueAsNumber)
-                                    field.onChange(e)
-                                }
-                                } ></Input>
-                                {/* <CurrencyInput {...field} value={moneyPerLesson} setValue={(value) => {
+                                <CurrencyInput {...field} value={moneyPerLesson} setValue={(value) => {
                                     setmoneyPerLesson(value)
                                     field.onChange(value)
-                                }} /> */}
+                                }} />
                             </FormControl>
                             <FormDescription>Số buổi học : {isNaN(numberLesson) ? 'Không xác định' : numberLesson}</FormDescription>
                             <FormMessage />
@@ -388,74 +405,11 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         {renderButtonSchedule(item)}
                     </div>)}
                 </div>
-                {/*   <div>
-                    <FormLabel className="flex justify-between items-center">
-                        Giáo viên nghỉ:
-                        <Button variant={'secondary'} className="text-right" onClick={() => append({ reason: "", date: "" })} type="button">Thêm</Button>
-                    </FormLabel>
-                    {fields.map((item, index) => (
-                        <li key={item.id} className="border p-3 rounded-lg mt-2 relative">
-                            <FormField
-                                control={form.control}
-                                name={`teacherAbsents.${index}.date`}
-                                render={({ field }) => (
-                                    <FormItem className="flex-1">
-                                        <FormLabel className="block">Ngày nghỉ: </FormLabel>
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <FormControl>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full pl-3 text-left font-normal",
-                                                            !field.value && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        {field.value ? (
-                                                            format(field.value, "PPP")
-                                                        ) : (
-                                                            <span>Pick a date</span>
-                                                        )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                    </Button>
-                                                </FormControl>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-auto p-0" align="start">
-                                                <Calendar
-                                                    mode="single"
-                                                    selected={field.value}
-                                                    onSelect={field.onChange}
-                                                    disabled={(date) =>
-                                                        date < new Date() || date < new Date("1900-01-01")
-                                                    }
-                                                    initialFocus
-                                                />
-                                            </PopoverContent>
-                                        </Popover>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <FormField
-                                control={form.control}
-                                name={`teacherAbsents.${index}.reason`}
-                                render={({ field }) => (
-                                    <FormItem >
-                                        <FormLabel>Lý do nghỉ dạy</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="li do nghi" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                            <button type="button" className="absolute top-0 right-0" onClick={() => remove(index)}>Xóa</button>
-                        </li>
-                    ))}
-
-                </div> */}
-
+                {numberAbsenceDays && numberAbsenceDays > 0 ?
+                    <FormDescription>Số ngày nghỉ của giáo viên : {numberAbsenceDays} </FormDescription> : <></>
+                }
                 <FormDescription>Ngày đóng tiến tiếp theo : {endDate() !== false ? (endDate() as dayjs.Dayjs).locale('vi').format('dddd, DD-MMMM-YYYY') : 'Chưa xác định'} </FormDescription>
+
                 <FormField
                     control={form.control}
                     name="teacherAbsents"

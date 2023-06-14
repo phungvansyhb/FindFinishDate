@@ -5,14 +5,14 @@ import fireBaseService from "./fireBase.service";
 
 
 
-export function useGetListDoc({ queryKey, dbKey, enable = true  , whereClause }: { queryKey: string, dbKey: string, enable?: boolean , whereClause? :[string, '==' | '!=', any][]  }) {
+export function useGetListDoc({ queryKey, dbKey, enable = true, whereClause }: { queryKey: string, dbKey: string, enable?: boolean, whereClause?: [string, '==' | '!=', any][] }) {
     return useQuery({
         queryKey: [queryKey],
-        queryFn: () => fireBaseService.getListDocs({ key: dbKey , whereClause }),
+        queryFn: () => fireBaseService.getListDocs({ key: dbKey, whereClause }),
         enabled: enable
     })
 }
-export function useGetDetailDoc({ queryKey, dbKey, enable = true  }: { queryKey: string, dbKey: string, enable?: boolean }) {
+export function useGetDetailDoc({ queryKey, dbKey, enable = true }: { queryKey: string, dbKey: string, enable?: boolean }) {
     return useQuery({
         queryKey: [queryKey],
         queryFn: () => fireBaseService.getDetailDoc(dbKey),
@@ -71,9 +71,9 @@ export function useActiveDoc({ queryClient, successHandler, invalidateQueryKey, 
         }
     })
 }
-export function useUpdateBatchDoc({  dbKey , amount }: {   dbKey: string , amount : 1|-1 }) {
+export function useUpdateBatchDoc({ dbKey, amount }: { dbKey: string, amount: 1 | -1 }) {
     return useMutation({
-        mutationFn: (where: [string, '==' | '!=' | '>=', any][]) => fireBaseService.updateBatchRegisterFormDocument(dbKey ,amount , where),
+        mutationFn: (where: [string, '==' | '!=' | '>=' | '<=', any][]) => fireBaseService.updateBatchRegisterFormDocument(dbKey, amount, where),
         // onSuccess: () => {
         //     toast({
         //         variant: "success",

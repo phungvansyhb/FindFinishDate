@@ -34,7 +34,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
-    tableName: 'register' | 'student' | 'classroom'
+    tableName: 'register' | 'student' | 'classroom' | 'absence'
 }
 
 export function DataTable<TData, TValue>({
@@ -69,7 +69,7 @@ export function DataTable<TData, TValue>({
         <div className="">
             <div className="flex items-center py-4 gap-1 flex-wrap justify-end">
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger asChild >
                         <Button variant="outline" className="ml-auto">
                             <TableIcon /> Cột
                         </Button>
@@ -97,11 +97,10 @@ export function DataTable<TData, TValue>({
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <DropdownMenu >
-                    <DropdownMenuTrigger>
+                    <DropdownMenuTrigger className="border-none">
                         <Button className="ml-auto">
                             <FilterIcon />Lọc
                         </Button>
-
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="p-4" align="end">
                         <div className="grid grid-cols-4 py-4 gap-4 ">
@@ -111,7 +110,7 @@ export function DataTable<TData, TValue>({
                                     switch (dataType) {
                                         case COLUMNDATA_TYPE.BOOLEAN:
                                             return (
-                                                <div className="flex flex-col gap-2">
+                                                <div className="flex flex-col gap-2" key={column.id}>
                                                     <Label>{column.id}</Label>
                                                     <Select onValueChange={(e) => {
                                                         column?.setFilterValue(e)
@@ -129,7 +128,7 @@ export function DataTable<TData, TValue>({
                                             )
                                         case COLUMNDATA_TYPE.DATE:
                                             return (
-                                                <div className="flex flex-col gap-2">
+                                                <div className="flex flex-col gap-2" key={column.id}>
                                                     <Label>{column.id}</Label>
                                                     <Popover>
                                                         <PopoverTrigger asChild>
@@ -163,7 +162,7 @@ export function DataTable<TData, TValue>({
 
                                         default:
                                             return (
-                                                <div className="flex flex-col gap-2">
+                                                <div className="flex flex-col gap-2" key={column.id}>
                                                     <Label>{column.id}</Label>
                                                     <Input
                                                         key={column.id}

@@ -16,7 +16,8 @@ export default function EditAction({ id, data }: Props) {
         ...data,
         updateAt: convertTimestampFirebaseToDate({ date: data.updateAt as Timestamp }),
         createAt: convertTimestampFirebaseToDate({ date: data.createAt as Timestamp }),
-        className: data.classRoom?.name
+        className: data.classRoom?.name,
+        absenceDate : convertTimestampFirebaseToDate({ date: data.absenceDate as Timestamp }),
     }
     const [isEdit, setEdit] = useState(false)
     return (

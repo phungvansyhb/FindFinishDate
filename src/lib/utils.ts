@@ -36,6 +36,20 @@ export function beforeUpdate<T extends Partial<IBase>>(data: T) {
 //     })
 //     return tmp;
 // }
+export function findCourseEndDate(schedule: number[], startDate: Date, numberLesson: number) {
+    if (schedule && schedule.length !== 0) {
+        let currentDate = dayjs(startDate);
+        let remainSessions = numberLesson;
+        while (remainSessions > 0) {
+            if (schedule.includes(currentDate.day())) {
+                remainSessions--;
+            }
+            currentDate = currentDate.add(1, 'day');
+        }
+        return currentDate;
+    }
+    else throw Error("find end date fail")
+}
 
 
 
@@ -95,7 +109,7 @@ export const API_QUERY_KEY = {
     GET_LIST_CLASSROOM: 'get_list_classroom',
     GET_DETAIL_STUDENT: 'get_detail_student',
     GET_DETAIL_CLASSROOM: 'get_detail_classroom',
-    GETLIST_ABSENCEFORM: 'get_list_absence'
+    GET_LIST_ABSENCEFORM: 'get_list_absence'
 }
 export const COLUMNDATA_TYPE = {
     STRING: 'string',

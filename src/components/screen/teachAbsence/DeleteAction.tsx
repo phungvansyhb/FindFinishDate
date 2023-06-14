@@ -1,12 +1,15 @@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/dialog"
 import { API_QUERY_KEY, DATABASE_KEY } from "@/lib/utils"
-import { useDeleteDoc } from "@/services/hookBase.service"
+import { useDeleteDoc, useUpdateBatchDoc } from "@/services/hookBase.service"
 import { useQueryClient } from "@tanstack/react-query"
 import { Trash2Icon } from "lucide-react"
 
-export default function DeleteAction({ id }: { id: React.Key }) {
+export default function DeleteAction({ id , classId  }: { id: React.Key , classId : React.Key }) {
     const queryClient = useQueryClient()
-    const deleteMutation = useDeleteDoc({ queryClient: queryClient, dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: API_QUERY_KEY.GET_LIST_STUDENT })
+    const updateRegisterForm = useUpdateBatchDoc({ dbKey: DATABASE_KEY.REGISTER_FORM, amount: -1 })
+
+    const deleteMutation = useDeleteDoc({ queryClient: queryClient, dbKey: DATABASE_KEY.ABSENCE_FORM, invalidateQueryKey: API_QUERY_KEY.GET_LIST_ABSENCEFORM })
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -23,13 +26,19 @@ export default function DeleteAction({ id }: { id: React.Key }) {
                 </DialogHeader>
                 <DialogFooter>
                     <DialogTrigger
-                        onClick={() => deleteMutation.mutate(id)}
-                        type="submit"
+                        onClick={() => {
+                            deleteMutation.mutate(id)
+                            updateRegisterForm.mutate([
+                                ['classId', '==', classId],
+                            ])
+                        }
+                        }
+                    type="submit"
                     >
-                        Lưu thay đổi
-                    </DialogTrigger>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    Lưu thay đổi
+                </DialogTrigger>
+            </DialogFooter>
+        </DialogContent>
+        </Dialog >
     )
 }

@@ -86,7 +86,7 @@ export const columns: ColumnDef<IClass>[] = [
     },
     cell: ({ row }) => {
       return row.original.schedule?.map((item) => (
-        <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">
+        <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1 py-1 font-semibold">
           {DAY_ARRAY[item]}
         </div>
       ));

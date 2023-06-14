@@ -11,7 +11,7 @@ type Props = { id?: React.Key, data: IRegisterFormDTO }
 
 export default function EditAction({ id, data }: Props) {
     const [open, setOpen] = useState(false)
-    const initValue: IRegisterForm = {
+    const initValue: IRegisterFormDTO = {
         ...data,
         studentName: data.student?.name,
         className: data.classRoom?.name,

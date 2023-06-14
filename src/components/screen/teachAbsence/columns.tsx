@@ -1,14 +1,11 @@
 import { COLUMNDATA_TYPE, convertTimestampFirebase, convertTimestampFirebaseToDate } from "@/lib/utils"
-import { IStudentDTO } from "@/typedefs/IStudent"
+import { IAbsenceForm } from "@/typedefs/IAbsenceForm"
 import { ColumnDef } from "@tanstack/react-table"
+import dayjs from "dayjs"
 import { Timestamp } from "firebase/firestore"
-import { ArrowUpDown } from "lucide-react"
-import { Button } from "../../button"
 import ActiveAction from "./ActiveAction"
 import DeleteAction from "./DeleteAction"
 import EditAction from "./EditAction"
-import dayjs from "dayjs"
-import { IAbsenceForm } from "@/typedefs/IAbsenceForm"
 
 export const columns: ColumnDef<IAbsenceForm>[] = [
     {
@@ -87,10 +84,10 @@ export const columns: ColumnDef<IAbsenceForm>[] = [
     {
         id: "Thao tác",
         cell: ({ row }) => {
-            const student = row.original;
+            const absenceForm = row.original;
             return (<div className="flex items-center">
-                <DeleteAction id={student.id} />
-                <EditAction data={student} />
+                <DeleteAction id={absenceForm.id} classId={absenceForm.classId} />
+                <EditAction data={absenceForm} />
             </div>)
         },
     },
