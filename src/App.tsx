@@ -46,7 +46,7 @@ function App() {
       <>
         <Tabs defaultValue={tab.tabName || TABS.REGISTER} className="w-full " onValueChange={e => setTab({ tabName: e })}>
           <TabsList className="grid grid-cols-3" >
-            <TabsTrigger value={TABS.REGISTER}>Đăng ký</TabsTrigger>
+            <TabsTrigger value={TABS.REGISTER}>Học phí</TabsTrigger>
             <TabsTrigger value={TABS.STUDENTS}>Học sinh</TabsTrigger>
             <TabsTrigger value={TABS.CLASSROOM}>Lớp học</TabsTrigger>
           </TabsList>

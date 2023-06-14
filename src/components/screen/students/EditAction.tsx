@@ -27,7 +27,6 @@ export default function EditAction({ id, data }: Props) {
                         <div className="font-semibold text-blue-500 cursor-pointer">{id}</div>
                         :
                         <EditIcon size={18} />
-
                     }
                 </SheetTrigger>
                 <SheetContent size={'full'} className='h-screen overflow-y-auto pb-20'>

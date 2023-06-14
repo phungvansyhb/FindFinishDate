@@ -11,14 +11,14 @@ export default function CreateModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <PlusCircleIcon /> Tạo đơn đăng ký học
+          <PlusCircleIcon /> Tạo học phí
         </Button>
       </DialogTrigger>
       <DialogContent className="md:max-w-[700px] sm:max-w-[425px] h-screen overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Thêm mới đơn đăng ký học</DialogTitle>
+          <DialogTitle>Thêm mới đơn học phí</DialogTitle>
           <DialogDescription>
-            Điền thông tin đơn đăng ký
+            Điền thông tin đơn học phí
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 ">
