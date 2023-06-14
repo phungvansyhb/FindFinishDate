@@ -5,14 +5,14 @@ import fireBaseService from "./fireBase.service";
 
 
 
-export function useGetListDoc({ queryKey, dbKey, enable = true  , whereClause }: { queryKey: string, dbKey: string, enable?: boolean , whereClause? :[string, '==' | '!=', any][]  }) {
+export function useGetListDoc({ queryKey, dbKey, enable = true, whereClause }: { queryKey: string, dbKey: string, enable?: boolean, whereClause?: [string, '==' | '!=', any][] }) {
     return useQuery({
         queryKey: [queryKey],
-        queryFn: () => fireBaseService.getListDocs({ key: dbKey , whereClause }),
+        queryFn: () => fireBaseService.getListDocs({ key: dbKey, whereClause }),
         enabled: enable
     })
 }
-export function useGetDetailDoc({ queryKey, dbKey, enable = true  }: { queryKey: string, dbKey: string, enable?: boolean }) {
+export function useGetDetailDoc({ queryKey, dbKey, enable = true }: { queryKey: string, dbKey: string, enable?: boolean }) {
     return useQuery({
         queryKey: [queryKey],
         queryFn: () => fireBaseService.getDetailDoc(dbKey),
@@ -21,7 +21,7 @@ export function useGetDetailDoc({ queryKey, dbKey, enable = true  }: { queryKey:
 }
 export function useCreateDoc({ queryClient, successHandler, invalidateQueryKey, dbKey }: { queryClient: QueryClient, successHandler?: () => void, invalidateQueryKey: string[], dbKey: string }) {
     return useMutation({
-        mutationFn: (data: Partial<IStudent>) => fireBaseService.createDoc(dbKey, data),
+        mutationFn: (data: any) => fireBaseService.createDoc(dbKey, data),
         onSuccess: () => {
             successHandler && successHandler()
             queryClient.invalidateQueries({ queryKey: invalidateQueryKey })
@@ -34,7 +34,7 @@ export function useCreateDoc({ queryClient, successHandler, invalidateQueryKey, 
 }
 export function useUpdateDoc({ queryClient, successHandler, invalidateQueryKey, dbKey }: { queryClient: QueryClient, successHandler?: () => void, invalidateQueryKey: string[], dbKey: string }) {
     return useMutation({
-        mutationFn: (data: Partial<IStudent>) => fireBaseService.updateDocument(dbKey + '/' + data.id, data),
+        mutationFn: (data: any) => fireBaseService.updateDocument(dbKey + '/' + data.id, data),
         onSuccess: () => {
             successHandler && successHandler()
             queryClient.invalidateQueries({ queryKey: invalidateQueryKey })
@@ -60,7 +60,7 @@ export function useDeleteDoc({ queryClient, successHandler, invalidateQueryKey, 
 }
 export function useActiveDoc({ queryClient, successHandler, invalidateQueryKey, dbKey }: { queryClient: QueryClient, successHandler?: () => void, invalidateQueryKey: string, dbKey: string }) {
     return useMutation({
-        mutationFn: (data: Partial<IStudent>) => fireBaseService.updateDocument(dbKey + '/' + data.id, { ...data, status: !data.status }),
+        mutationFn: (data: any) => fireBaseService.updateDocument(dbKey + '/' + data.id, { ...data, status: !data.status }),
         onSuccess: () => {
             successHandler && successHandler()
             queryClient.invalidateQueries({ queryKey: [invalidateQueryKey] })
@@ -69,5 +69,16 @@ export function useActiveDoc({ queryClient, successHandler, invalidateQueryKey, 
                 title: "Hooh ray ! Cập nhật thành công",
             })
         }
+    })
+}
+export function useUpdateBatchDoc({ dbKey, amount }: { dbKey: string, amount: 1 | -1 }) {
+    return useMutation({
+        mutationFn: (where: [string, '==' | '!=' | '>=' | '<=', any][]) => fireBaseService.updateBatchRegisterFormDocument(dbKey, amount, where),
+        // onSuccess: () => {
+        //     toast({
+        //         variant: "success",
+        //         title: "Hooh ray ! Cập nhật thành công",
+        //     })
+        // }
     })
 }

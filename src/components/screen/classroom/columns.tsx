@@ -1,4 +1,4 @@
-import { COLUMNDATA_TYPE, convertTimestampFirebase, convertTimestampFirebaseToDate } from "@/lib/utils"
+import { COLUMNDATA_TYPE, DAY_ARRAY, convertTimestampFirebase, convertTimestampFirebaseToDate } from "@/lib/utils"
 import { IClass } from "@/typedefs/IClass"
 import { ColumnDef } from "@tanstack/react-table"
 import dayjs from "dayjs"
@@ -71,6 +71,25 @@ export const columns: ColumnDef<IClass>[] = [
           Mô tả
         </div>
       );
+    },
+  },
+  {
+    id: "Lịch học",
+    accessorKey: "schedule",
+    enableColumnFilter: false,
+    header: () => {
+      return (
+        <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+          Lịch học
+        </div>
+      );
+    },
+    cell: ({ row }) => {
+      return row.original.schedule?.map((item) => (
+        <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1 py-1 font-semibold">
+          {DAY_ARRAY[item]}
+        </div>
+      ));
     },
   },
   {

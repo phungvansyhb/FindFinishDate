@@ -3,6 +3,10 @@ import { IBase } from "./IBase";
 import { IClass } from "./IClass";
 import { IStudent } from "./IStudent";
 
+// export interface AbsentSeason {
+//     date: Date | Timestamp,
+//     reason: string
+// }
 export interface IRegisterForm extends IBase {
     status: boolean
     classId: string,
@@ -13,8 +17,9 @@ export interface IRegisterForm extends IBase {
     startDate: Date | Timestamp,
     receiveMoney: string,
     lessonCost: string,
-    schedule: number[],
+    // schedule: number[],
     nextPaymentDate: Date | Timestamp
+    teacherAbsents: number
     // findFinishDate(): string,
 }
 export interface IRegisterFormDTO extends IRegisterForm {

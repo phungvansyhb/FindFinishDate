@@ -52,7 +52,7 @@ type Props = {
 export function StudentForm({ triggerDialog, initialValue, mode = 'create' }: Props) {
     const queryClient = useQueryClient()
     const createStudentMutation = useCreateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_STUDENT] })
-    const updateStudentMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_STUDENT, API_QUERY_KEY.GET_LIST_REGISTERFORM] })
+    const updateStudentMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.STUDENT, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_STUDENT] })
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: initialValue || {

@@ -15,6 +15,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from './components/use-toast'
 import { useEffect } from 'react'
+import TeachAbsence from './components/screen/teachAbsence/Absence'
 
 
 function App() {
@@ -45,10 +46,11 @@ function App() {
     return (
       <>
         <Tabs defaultValue={tab.tabName || TABS.REGISTER} className="w-full " onValueChange={e => setTab({ tabName: e })}>
-          <TabsList className="grid grid-cols-3" >
-            <TabsTrigger value={TABS.REGISTER}>Đăng ký</TabsTrigger>
+          <TabsList className="grid grid-cols-4" >
+            <TabsTrigger value={TABS.REGISTER}>Học phí</TabsTrigger>
             <TabsTrigger value={TABS.STUDENTS}>Học sinh</TabsTrigger>
             <TabsTrigger value={TABS.CLASSROOM}>Lớp học</TabsTrigger>
+            <TabsTrigger value={TABS.ABSENCE}>Nghỉ phép</TabsTrigger>
           </TabsList>
           <TabsContent value={TABS.REGISTER}>
             <RegisterManage />
@@ -58,6 +60,9 @@ function App() {
           </TabsContent>
           <TabsContent value={TABS.CLASSROOM}>
             <ClassRoom />
+          </TabsContent>
+          <TabsContent value={TABS.ABSENCE}>
+            <TeachAbsence />
           </TabsContent>
         </Tabs>
         <Toaster />

@@ -2,7 +2,7 @@ import { Button } from '@/components/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/dialog'
 import { PlusCircleIcon } from 'lucide-react'
 import { useState } from 'react'
-import { RegisterForm } from './RegisterForm'
+import { AbsenceForm } from './AbsenceForm'
 
 
 export default function CreateModal() {
@@ -11,18 +11,18 @@ export default function CreateModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>
-          <PlusCircleIcon /> Tạo học phí
+          <PlusCircleIcon /> Thêm mới đơn nghỉ phép
         </Button>
       </DialogTrigger>
       <DialogContent className="md:max-w-[700px] sm:max-w-[425px] h-screen overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Thêm mới đơn học phí</DialogTitle>
+          <DialogTitle>Thêm mới đơn nghỉ phép</DialogTitle>
           <DialogDescription>
-            Điền thông tin đơn học phí
+            Điền thông tin nghỉ phép
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4 ">
-          <RegisterForm triggerDialog={setOpen} />
+          <AbsenceForm triggerDialog={setOpen} />
         </div>
 
       </DialogContent>

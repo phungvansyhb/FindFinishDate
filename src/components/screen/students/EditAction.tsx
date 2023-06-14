@@ -1,7 +1,7 @@
 import { Button } from '@/components/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/sheet'
 import { convertTimestampFirebaseToDate } from '@/lib/utils'
-import { IStudent, IStudentDTO } from '@/typedefs/IStudent'
+import {  IStudentDTO } from '@/typedefs/IStudent'
 import { Timestamp } from 'firebase/firestore'
 import { EditIcon } from 'lucide-react'
 import React, { useState } from 'react'
@@ -27,7 +27,6 @@ export default function EditAction({ id, data }: Props) {
                         <div className="font-semibold text-blue-500 cursor-pointer">{id}</div>
                         :
                         <EditIcon size={18} />
-
                     }
                 </SheetTrigger>
                 <SheetContent size={'full'} className='h-screen overflow-y-auto pb-20'>
