@@ -2,13 +2,13 @@ import { Button } from "@/components/button"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/form"
 import { Input } from "@/components/input"
 import { Textarea } from "@/components/textarea"
-import { API_QUERY_KEY, DATABASE_KEY, beforeCreate } from "@/lib/utils"
+import { API_QUERY_KEY, DATABASE_KEY, DAYS, beforeCreate } from "@/lib/utils"
 import { useCreateDoc, useUpdateDoc } from "@/services/hookBase.service"
 import { IClass } from "@/typedefs/IClass"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
-import { SetStateAction } from "react"
+import { SetStateAction, useState } from "react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -23,7 +23,8 @@ const formSchema = z.object({
     status: z.boolean().optional(),
     createAt: z.any(),
     updateAt: z.any(),
-    isDeleted: z.boolean()
+    isDeleted: z.boolean(),
+    schedule : z.any()
 })
 
 type Props = {
@@ -44,10 +45,27 @@ export function ClassroomForm({ triggerDialog, initialValue, mode = 'create' }: 
             teacher: '',
             createAt: new Date(),
             updateAt: new Date(),
-            isDeleted: false
+            isDeleted: false,
+
         },
     })
+    const [schedule, setSchedule] = useState<number[]>(initialValue?.schedule ?? [])
 
+    function handleAddSchedule(date: number) {
+        const temp = new Set(schedule);
+        if (temp.has(date)) {
+            temp.delete(date)
+        } else {
+            temp.add(date)
+        }
+        setSchedule(Array.from(temp))
+        form.setValue("schedule", Array.from(temp))
+    }
+    function renderButtonSchedule(dayName: { value: number, label: string }) {
+        return <button type='button' className={schedule?.includes(dayName.value) ? 'bg-black text-white font-bold' : ''}
+            onClick={() => handleAddSchedule(dayName.value)}>{dayName.label}</button>
+
+    }
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.status = true;
         beforeCreate(values)
@@ -87,6 +105,13 @@ export function ClassroomForm({ triggerDialog, initialValue, mode = 'create' }: 
                         </FormItem>
                     )}
                 />
+                <br />
+                <FormLabel>Lịch học</FormLabel>
+                <div className="flex flex-wrap gap-2"  >
+                    {DAYS.map(item => <div key={item.value}>
+                        {renderButtonSchedule(item)}
+                    </div>)}
+                </div>
                 <FormField
                     control={form.control}
                     name="description"

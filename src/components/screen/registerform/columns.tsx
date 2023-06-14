@@ -3,7 +3,7 @@ import { IRegisterFormDTO } from "@/typedefs/IRegisterForm";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { Timestamp } from "firebase/firestore";
-import { ArrowUpDown, StickyNoteIcon } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import { Button } from "../../button";
 import ActiveAction from "./ActiveAction";
 import CheckDateFee from "./CheckDateFee";
@@ -11,7 +11,6 @@ import DeleteAction from "./DeleteAction";
 import DetailClassAction from "./DetailClassAction";
 import DetailStudentAction from "./DetailStudentAction";
 import EditAction from "./EditAction";
-import { Tooltip } from "@/components/tooltip";
 
 export const columns: ColumnDef<IRegisterFormDTO>[] = [
     {
@@ -184,44 +183,44 @@ export const columns: ColumnDef<IRegisterFormDTO>[] = [
             );
         },
     },
-    {
-        id: "Lịch học",
-        accessorKey: "schedule",
-        enableColumnFilter: false,
-        header: () => {
-            return (
-                <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-                    Lịch học
-                </div>
-            );
-        },
-        cell: ({ row }) => {
-            return row.original.schedule.map((item) => (
-                <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">
-                    {DAY_ARRAY[item]}
-                </div>
-            ));
-        },
-    },
-    {
-        id: "Số ngày nghỉ giáo viên",
-        accessorKey: "teacherAbsents",
-        enableColumnFilter: false,
-        header: () => {
-            return (
-                <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
-                    Số ngày nghỉ giáo viên
-                </div>
-            );
-        },
-        cell: ({ row }) => {
-            return row.original.schedule.map((item) => (
-                <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">
-                    {DAY_ARRAY[item]}
-                </div>
-            ));
-        },
-    },
+    // {
+    //     id: "Lịch học",
+    //     accessorKey: "schedule",
+    //     enableColumnFilter: false,
+    //     header: () => {
+    //         return (
+    //             <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+    //                 Lịch học
+    //             </div>
+    //         );
+    //     },
+    //     cell: ({ row }) => {
+    //         return row.original.schedule.map((item) => (
+    //             <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">
+    //                 {DAY_ARRAY[item]}
+    //             </div>
+    //         ));
+    //     },
+    // },
+    /*  {
+         id: "Số ngày nghỉ giáo viên",
+         accessorKey: "teacherAbsents",
+         enableColumnFilter: false,
+         header: () => {
+             return (
+                 <div className="text-center whitespace-nowrap text-ellipsis overflow-hidden">
+                     Số ngày nghỉ giáo viên
+                 </div>
+             );
+         },
+         cell: ({ row }) => {
+             return row.original.schedule.map((item) => (
+                 <div key={item} className="px-2 bg-slate-100 rounded-md text-xs m-1">
+                     {DAY_ARRAY[item]}
+                 </div>
+             ));
+         },
+     }, */
     {
         id: "Ngày đóng tiền tiếp theo",
         accessorKey: "nextPaymentDate",

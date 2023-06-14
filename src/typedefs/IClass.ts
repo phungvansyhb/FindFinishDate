@@ -4,4 +4,5 @@ export interface IClass extends IBase {
     description: string,
     teacher: string,
     status: boolean,
+    schedule: number[],
 }

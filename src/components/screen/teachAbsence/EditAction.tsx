@@ -1,21 +1,21 @@
 import { Button } from '@/components/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/sheet'
 import { convertTimestampFirebaseToDate } from '@/lib/utils'
-import {  IStudentDTO } from '@/typedefs/IStudent'
+import { IStudentDTO } from '@/typedefs/IStudent'
 import { Timestamp } from 'firebase/firestore'
 import { EditIcon } from 'lucide-react'
 import React, { useState } from 'react'
-import { StudentForm } from './StudentForm'
+import { AbsenceForm } from './AbsenceForm'
+import { IAbsenceForm } from '@/typedefs/IAbsenceForm'
 
-type Props = { id?: React.Key, data: IStudentDTO }
+type Props = { id?: React.Key, data: IAbsenceForm }
 
 export default function EditAction({ id, data }: Props) {
     const [open, setOpen] = useState(false)
-    const initValue: IStudentDTO = {
+    const initValue: IAbsenceForm = {
         ...data,
         updateAt: convertTimestampFirebaseToDate({ date: data.updateAt as Timestamp }),
         createAt: convertTimestampFirebaseToDate({ date: data.createAt as Timestamp }),
-        lastContactDate: convertTimestampFirebaseToDate({ date: data.lastContactDate as Timestamp }),
         className: data.classRoom?.name
     }
     const [isEdit, setEdit] = useState(false)
@@ -38,7 +38,7 @@ export default function EditAction({ id, data }: Props) {
                         </SheetTitle>
                     </SheetHeader>
                     <div className={isEdit ? 'pointer-events-auto' : 'pointer-events-none'}>
-                        <StudentForm triggerDialog={setOpen} initialValue={initValue} mode={isEdit ? 'edit' : 'view'} />
+                        <AbsenceForm triggerDialog={setOpen} initialValue={initValue} mode={isEdit ? 'edit' : 'view'} />
                     </div>
                 </SheetContent>
             </Sheet >

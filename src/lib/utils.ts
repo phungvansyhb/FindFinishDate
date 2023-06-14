@@ -79,13 +79,14 @@ export const DAYS = [
 
 export const DAY_ARRAY = ['Chủ nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7',]
 
-export const TABS = { REGISTER: 'registers', STUDENTS: 'students', CLASSROOM: 'classroom' }
+export const TABS = { REGISTER: 'registers', STUDENTS: 'students', CLASSROOM: 'classroom', ABSENCE: 'absenCE' }
 
 export const DATABASE_KEY = {
     CLASS: 'Class',
     STUDENT: 'Student',
     REGISTER_FORM: 'RegisterForm',
-    ABSENT_FORM: 'AbsentForm'
+    ABSENCE_FORM: 'AbsenceForm',
+
 }
 
 export const API_QUERY_KEY = {
@@ -94,6 +95,7 @@ export const API_QUERY_KEY = {
     GET_LIST_CLASSROOM: 'get_list_classroom',
     GET_DETAIL_STUDENT: 'get_detail_student',
     GET_DETAIL_CLASSROOM: 'get_detail_classroom',
+    GETLIST_ABSENCEFORM: 'get_list_absence'
 }
 export const COLUMNDATA_TYPE = {
     STRING: 'string',

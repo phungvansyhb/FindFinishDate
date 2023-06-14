@@ -7,6 +7,7 @@ import { Input } from "@/components/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/popover"
 import { API_QUERY_KEY, DATABASE_KEY, DAYS, beforeCreate, cn } from "@/lib/utils"
 import { useCreateDoc, useGetListDoc, useUpdateDoc } from "@/services/hookBase.service"
+import { IClass } from "@/typedefs/IClass"
 import { IRegisterForm } from "@/typedefs/IRegisterForm"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
@@ -14,7 +15,7 @@ import { format } from "date-fns"
 import dayjs from "dayjs"
 import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from "lucide-react"
 import { SetStateAction, useMemo, useState } from "react"
-import { useFieldArray, useForm } from "react-hook-form"
+import {  useForm } from "react-hook-form"
 import * as z from "zod"
 
 
@@ -27,7 +28,7 @@ const formSchema = z.object({
     startDate: z.any().optional(),
     receiveMoney: z.string().optional(),
     lessonCost: z.string(),
-    schedule: z.number().array(),
+    // schedule: z.number().array(),
     createAt: z.any(),
     updateAt: z.any(),
     isDeleted: z.boolean(),
@@ -55,7 +56,6 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
             return parseInt(initialValue.lessonCost as string)
         } else return 0
     })
-    const [schedule, setSchedule] = useState<number[]>(initialValue?.schedule ?? [])
 
     const numberLesson = useMemo(() => {
         return Math.floor(money / moneyPerLesson)
@@ -70,24 +70,25 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
             startDate: new Date(),
             receiveMoney: "0",
             lessonCost: "0",
-            // schedule: [DAY_ARRAY[dayjs().day()]],
             status: true,
             createAt: new Date(),
             updateAt: new Date(),
             isDeleted: false,
-            teacherAbsents: []
+            teacherAbsents: 0
         },
     })
-    const { fields, append, remove } = useFieldArray({
-        control: form.control,
-        name: "teacherAbsents"
-    });
+    const [selectedClass, setSelectedClass] = useState<IClass>()
+    function renderButtonSchedule(dayName: { value: number, label: string }) {
+        return <button type='button' className={selectedClass?.schedule?.includes(dayName.value) ? 'bg-black text-white font-bold' : ''}
+        >{dayName.label}</button>
+
+    }
     function findCourseEndDate() {
-        if (schedule && schedule?.length !== 0) {
+        if (selectedClass?.schedule && selectedClass?.schedule?.length !== 0) {
             let currentDate = startDate;
-            let remainSessions = numberLesson + fields.length;
+            let remainSessions = numberLesson + form.watch('teacherAbsents');
             while (remainSessions > 0) {
-                if (schedule.includes(currentDate.day())) {
+                if (selectedClass?.schedule.includes(currentDate.day())) {
                     remainSessions--;
                 }
                 currentDate = currentDate.add(1, 'day');
@@ -96,36 +97,18 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
         }
         else return false
     }
-    const endDate = useMemo(() => findCourseEndDate, [schedule, startDate, numberLesson, fields])
-    const { data: listStudent } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_STUDENT, dbKey: DATABASE_KEY.STUDENT, whereClause: [["status", '==', true] , ["classId" , "==","1u263871623"]] })
+    const endDate = useMemo(() => findCourseEndDate, [selectedClass, startDate, numberLesson])
+    const { data: listStudent } = useGetListDoc({ queryKey: form.getValues('classId'), dbKey: DATABASE_KEY.STUDENT, whereClause: [["status", '==', true], ["classId", "==", form.watch('classId')]] })
     const { data: listClassRoom } = useGetListDoc({ queryKey: API_QUERY_KEY.GET_LIST_CLASSROOM, dbKey: DATABASE_KEY.CLASS, whereClause: [["status", '==', true]] })
     const createRegisterMutation = useCreateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
     const updateRegisterMutation = useUpdateDoc({ queryClient, successHandler: () => triggerDialog(false), dbKey: DATABASE_KEY.REGISTER_FORM, invalidateQueryKey: [API_QUERY_KEY.GET_LIST_REGISTERFORM] })
 
 
-
-    function handleAddSchedule(date: number) {
-        const temp = new Set(schedule);
-        if (temp.has(date)) {
-            temp.delete(date)
-        } else {
-            temp.add(date)
-        }
-        setSchedule(Array.from(temp))
-        form.setValue("schedule", Array.from(temp))
-    }
-
-    function renderButtonSchedule(dayName: { value: number, label: string }) {
-        return <button type='button' className={schedule?.includes(dayName.value) ? 'bg-black text-white font-bold' : ''}
-            onClick={() => handleAddSchedule(dayName.value)}>{dayName.label}</button>
-
-    }
-
     function onSubmit(values: z.infer<typeof formSchema>) {
         values.status = true;
         values.nextPaymentDate = (endDate() as dayjs.Dayjs).toDate()
         beforeCreate(values)
-        console.log(values)
+        // console.log(values)
         if (mode === 'create') {
             createRegisterMutation.mutate(values)
         } else {
@@ -176,6 +159,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                                         value={classroom.name}
                                                         key={classroom.id}
                                                         onSelect={(value: any) => {
+                                                            setSelectedClass(classroom as IClass)
                                                             form.setValue("className", value)
                                                             form.setValue("classId", classroom.id)
                                                         }}
@@ -307,7 +291,6 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                     <FormField
                         control={form.control}
                         name="startDate"
-
                         render={({ field }) => (
                             <FormItem
 
@@ -361,11 +344,16 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         <FormItem>
                             <FormLabel>Số tiền nộp</FormLabel>
                             <FormControl>
-                                <CurrencyInput {...field} value={money} setValue={(value) => {
+                                <Input type="number" {...field} placeholder="Số tiền nộp" onChange={(e) => {
+                                    setmoney(e.target.valueAsNumber)
+                                    field.onChange(e)
+                                }
+                                }></Input>
+
+                                {/* <CurrencyInput {...field} value={money} setValue={(value) => {
                                     setmoney(value)
                                     field.onChange(value)
-
-                                }} />
+                                }} /> */}
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -378,10 +366,15 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         <FormItem>
                             <FormLabel>Giá mỗi buổi học</FormLabel>
                             <FormControl>
-                                <CurrencyInput {...field} value={moneyPerLesson} setValue={(value) => {
+                                <Input type="number" {...field} placeholder="Giá một buổi học" onChange={(e) => {
+                                    setmoneyPerLesson(e.target.valueAsNumber)
+                                    field.onChange(e)
+                                }
+                                } ></Input>
+                                {/* <CurrencyInput {...field} value={moneyPerLesson} setValue={(value) => {
                                     setmoneyPerLesson(value)
                                     field.onChange(value)
-                                }} />
+                                }} /> */}
                             </FormControl>
                             <FormDescription>Số buổi học : {isNaN(numberLesson) ? 'Không xác định' : numberLesson}</FormDescription>
                             <FormMessage />
@@ -395,7 +388,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         {renderButtonSchedule(item)}
                     </div>)}
                 </div>
-                <div>
+                {/*   <div>
                     <FormLabel className="flex justify-between items-center">
                         Giáo viên nghỉ:
                         <Button variant={'secondary'} className="text-right" onClick={() => append({ reason: "", date: "" })} type="button">Thêm</Button>
@@ -460,10 +453,20 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                         </li>
                     ))}
 
-                </div>
+                </div> */}
 
                 <FormDescription>Ngày đóng tiến tiếp theo : {endDate() !== false ? (endDate() as dayjs.Dayjs).locale('vi').format('dddd, DD-MMMM-YYYY') : 'Chưa xác định'} </FormDescription>
-
+                <FormField
+                    control={form.control}
+                    name="teacherAbsents"
+                    render={({ field }) => (
+                        <FormItem className="hidden">
+                            <FormControl>
+                                <Input {...field} />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
                 {
                     mode === 'create' &&
                     <Button type="submit" > {createRegisterMutation.isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Lưu</Button>

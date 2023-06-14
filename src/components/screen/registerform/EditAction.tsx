@@ -20,10 +20,7 @@ export default function EditAction({ id, data }: Props) {
         startDate: convertTimestampFirebaseToDate({ date: data.startDate as Timestamp }),
         updateAt: convertTimestampFirebaseToDate({ date: data.updateAt as Timestamp }),
         createAt: convertTimestampFirebaseToDate({ date: data.createAt as Timestamp }),
-        teacherAbsents: data.teacherAbsents ? data.teacherAbsents?.map(item => ({
-            date: convertTimestampFirebaseToDate({ date: item.date as Timestamp }),
-            reason: item.reason
-        })) : []
+        teacherAbsents: data.teacherAbsents ?? 0
     }
     const [isEdit, setEdit] = useState(false)
     return (
