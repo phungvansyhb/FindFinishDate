@@ -181,7 +181,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             <CommandEmpty >
                                                 Not found...
                                             </CommandEmpty>
-                                            <CommandGroup >
+                                            <CommandGroup className="max-h-[400px] overflow-y-auto">
                                                 {listClassRoom?.map((classroom) => (
                                                     <CommandItem
                                                         value={classroom.name}
@@ -244,7 +244,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             <CommandEmpty >
                                                 Not found ...
                                             </CommandEmpty>
-                                            <CommandGroup >
+                                            <CommandGroup className="max-h-[400px] overflow-y-auto">
                                                 {listStudent?.map((student) => (
                                                     <CommandItem
                                                         value={student.name}
@@ -306,7 +306,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             selected={field.value}
                                             onSelect={field.onChange}
                                             disabled={(date) =>
-                                                date > new Date() || date < new Date("1900-01-01")
+                                                date < new Date("1900-01-01")
                                             }
                                             initialFocus
                                         />
@@ -354,7 +354,7 @@ export function RegisterForm({ triggerDialog, initialValue, mode = 'create' }: P
                                             }
                                             }
                                             disabled={(date) =>
-                                                date < new Date() || date < new Date("1900-01-01")
+                                                date < new Date("1900-01-01")
                                             }
                                             initialFocus
                                         />
